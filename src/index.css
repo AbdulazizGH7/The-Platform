@@ -3,5 +3,8 @@
 @tailwind utilities;
 
 body{
+    max-width: 2000px; width: 98%;
     font-family: "outfit", sans-serif;
+    background: rgb(3,0,46);
+    background: linear-gradient(145deg, rgba(3,0,46,1) 38%, rgba(49,46,96,1) 100%);
 }
