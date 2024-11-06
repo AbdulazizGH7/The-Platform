@@ -8,3 +8,14 @@ body{
     background: rgb(3,0,46);
     background: linear-gradient(145deg, rgba(3,0,46,1) 38%, rgba(49,46,96,1) 100%);
 }
+
+
+@layer utilities{
+
+    .btn-hover{
+        background-color: #6A6AA4;
+        transition: background-color 300ms ease-out;
+    
+    }
+
+}

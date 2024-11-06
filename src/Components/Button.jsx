@@ -45,8 +45,7 @@ function Button({title ="Button", textSize = "base", px = "4", py = "2", behavio
 
 
   return (
-    <button className={`text-gray-100 rounded-3xl text-center font-bold ${sizeClasses[textSize]} ${pxClasses[px]} ${pyClasses[py]}`}
-    style={{backgroundColor: "#8D8DDA"}}
+    <button className={`text-gray-100 rounded-3xl text-center font-bold bg-[#8D8DDA] hover:btn-hover ${sizeClasses[textSize]} ${pxClasses[px]} ${pyClasses[py]}`}
     onClick={behavior}>{title}</button>
   )
 }
