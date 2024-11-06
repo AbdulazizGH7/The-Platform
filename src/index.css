@@ -10,12 +10,35 @@ body{
 }
 
 
+@layer components{
+
+    .section-card{
+        background: rgb(41,18,76);
+        background: linear-gradient(145deg, rgba(41,18,76,1) 25%, rgba(37,39,114,1) 100%);
+    }
+
+    .vl{
+        width: 1px;                 /* Set the width (thickness) of the line */
+        background-color:white;  /* Line color */
+        margin: 0 20px;  
+    }
+
+    .card-grade{
+        background: rgb(23,19,82);
+        background: linear-gradient(90deg, rgba(23,19,82,1) 0%, rgba(110,66,157,1) 100%);
+    }
+}
+
 @layer utilities{
 
     .btn-hover{
         background-color: #6A6AA4;
         transition: background-color 300ms ease-out;
-    
+    }
+
+    .card-hover{
+        background: rgb(110,66,157);
+        background: linear-gradient(90deg, rgba(110,66,157,1) 46%, rgba(35,38,254,0.5) 81%);         
     }
 
 }
