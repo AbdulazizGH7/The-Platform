@@ -1,0 +1,36 @@
+/* ButtonGradient.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .button-gradient {
+    @apply relative flex justify-center items-center flex-shrink-0 rounded-[10px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] overflow-hidden text-white;
+
+    background: linear-gradient(90deg, #171352 0%, #6E429D 100%);
+
+    /* Apply responsive styles using prefixes */
+    @apply w-[307px] h-[86px] pt-[23px] pr-[83px] pb-[23px] pl-[82px]
+           md:w-[365px] md:pr-[112px] md:pl-[112px]
+           lg:w-[424px] lg:pr-[141px] lg:pl-[141px];
+  }
+
+  .button-gradient::before {
+    content: '';
+    @apply absolute inset-0 rounded-[10px];
+    background: linear-gradient(152deg, #6A31C1 48.91%, rgba(35, 38, 254, 0.5) 82.85%);
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    z-index: 1;
+  }
+
+  .button-gradient:hover::before {
+    opacity: 1;
+  }
+
+  .button-gradient > span {
+    @apply relative;
+    z-index: 2;
+  }
+}
