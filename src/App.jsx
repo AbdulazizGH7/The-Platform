@@ -1,6 +1,7 @@
 import CourseGroupLayout from "./Components/CourseGroupLayout"
 import Hero from "./Components/Hero"
 import Navbar from "./Components/Navbar"
+import CourseEvaluationPage from './Components/CourseEvaluation/CourseEvaluationPage'
 
 function App() {
 
@@ -8,7 +9,6 @@ function App() {
     <>
     <Navbar></Navbar>
     <Hero></Hero>
-    <CourseGroupLayout></CourseGroupLayout>
     </>
   )
 }
