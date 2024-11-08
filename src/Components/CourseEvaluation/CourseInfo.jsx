@@ -6,7 +6,7 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
   const [hover, setHover] = useState(0);
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex flex-wrap gap-2">
       {[...Array(5)].map((_, index) => {
         const ratingValue = index + 1;
         return (
@@ -94,27 +94,27 @@ const CourseInfo = () => {
   }, [experiences]);
 
   return (
-    <div className="flex flex-col w-[23%] max-md:ml-0 max-md:w-full">
-      <h2 data-layername="swe206" className="overflow-hidden px-16 py-3 text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] max-md:px-5">
+    <div className="flex flex-col w-full w-full md:w-[23%] max-md:ml-0 max-md:w-full">
+      <h2 data-layername="swe206" className="overflow-hidden sm:overflow-visible px-16 py-3 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] px-5">
         SWE 206
       </h2>
-      <div className="flex overflow-hidden flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] max-md:px-5 max-md:mt-10">
-        <h3 data-layername="difficulty" className="self-center text-2xl font-bold text-center text-white">
+      <div className="flex flex-wrap sm:flex-nowrap overflow-hidden sm:overflow-visible flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] px-5 max-md:mt-10">
+        <h3 data-layername="difficulty" className="self-center text-xl sm:text-2xl font-bold text-center text-white">
           Difficulty
         </h3>
         <StarRating count={avgDifficulty} isReadOnly={true} />
-        <h3 data-layername="workload" className="self-center mt-2.5 text-2xl font-bold text-center text-white">
+        <h3 data-layername="workload" className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
           Workload
         </h3>
         <StarRating count={avgWorkload} isReadOnly={true} />
-        <h3 data-layername="resources" className="self-center mt-2.5 text-2xl font-bold text-center text-white">
+        <h3 data-layername="resources" className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
           Resources
         </h3>
         <StarRating count={avgResources} isReadOnly={true} />
       </div>
       {/* Write Experience Button */}
       <button
-        className="flex overflow-hidden gap-0.5 justify-center px-4 mt-10 text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]"
+        className="flex flex-wrap sm:flex-nowrap overflow-hidden sm:overflow-visible gap-2 sm:gap-0.5 justify-center px-2 sm:px-4 mt-10 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]"
         onClick={handleOpenModal}
       >
         <img loading="lazy" src={Create} className="object-contain shrink-0 aspect-[1.06] w-[57px]" alt="" />
@@ -124,7 +124,7 @@ const CourseInfo = () => {
       {/* Modal for Writing Experience */}
       {isWriteExperienceModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-gradient-to-br from-[#2A2159] to-[#3D2F82] p-10 rounded-2xl shadow-lg w-[900px] relative border border-purple-500">
+          <div className="bg-gradient-to-br from-[#2A2159] to-[#3D2F82] p-10 rounded-2xl shadow-lg w-full max-w-[900px] relative border border-purple-500">
             {/* Modal Header */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-3xl font-bold text-white">Write Experience</h2>
@@ -203,6 +203,24 @@ const CourseInfo = () => {
 };
 
 export default CourseInfo;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
