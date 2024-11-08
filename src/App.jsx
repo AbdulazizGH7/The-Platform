@@ -7,9 +7,7 @@ function App() {
   return (
     <>
     <Navbar></Navbar>
-    <CourseSearchPage></CourseSearchPage>
-    <hr className="mt-10"/>
-    <footer>GGGS</footer>
+    <Hero></Hero>
     </>
   )
 }
