@@ -7,8 +7,9 @@ function App() {
 
   return (
     <>
-    <Navbar></Navbar>
-    <Hero></Hero>
+    {/* <Navbar></Navbar>
+    <Hero></Hero> */}
+    <CourseEvaluationPage/>
     </>
   )
 }
