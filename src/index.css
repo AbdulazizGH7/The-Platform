@@ -27,6 +27,11 @@ body{
         background: rgb(23,19,82);
         background: linear-gradient(90deg, rgba(23,19,82,1) 0%, rgba(110,66,157,1) 100%);
     }
+
+    .course-grade{
+        background: rgb(110,66,157);
+        background: linear-gradient(180deg, rgba(110,66,157,1) 0%, rgba(19,16,68,1) 100%);
+    }
 }
 
 @layer utilities{
