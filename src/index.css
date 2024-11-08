@@ -47,3 +47,22 @@ body{
     }
 
 }
+/* Custom Scrollbar Styles */
+.scrollbar-custom::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #6b46c1; /* Customize thumb color */
+    border-radius: 8px;
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background-color: #f5edf7; /* Customize track color */
+    border-radius: 8px;
+  }
+  
+  .scrollbar-custom {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #6b46c1 #edf2f7; /* Firefox */
+  }
