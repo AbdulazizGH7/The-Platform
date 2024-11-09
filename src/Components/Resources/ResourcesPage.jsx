@@ -1,6 +1,6 @@
+// src/Components/Resources/ResourcesPage.jsx
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from '../Navbar';
+import { Route, Routes } from 'react-router-dom';
 import ResourcesSection from './ResourcesSection';
 import ResourcesList from './ResourcesList';
 import ButtonGradient from '../ButtonGradient/ButtonGradient';
@@ -36,56 +36,51 @@ function ResourcesPage({ courseName = "SWE206" }) {
   };
 
   return (
-    <Router>
-
-      <Navbar />
-
+    <>
       <h1 className="text-white underline text-center font-outfit text-[clamp(1.5rem,6vw,4rem)] font-medium leading-tight tracking-normal m-6 mt-10">
         {courseName} Resources
       </h1>
 
-      <div>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ResourcesSection
-                resources={resources}
-                categoryTitles={categoryTitles}
-                courseName={courseName}
-              />
-            }
-          />
-          <Route
-            path="/resources/:category"
-            element={
-              <ResourcesList
-                resources={resources}
-                updateResources={updateResources}
-                categoryTitles={categoryTitles}
-                courseName={courseName}
-                isAdmin={true}
-              />
-            }
-          />
-        </Routes>
+      <Routes>
+        {/* Use relative paths without leading / */}
+        <Route
+          index
+          element={
+            <ResourcesSection
+              resources={resources}
+              categoryTitles={categoryTitles}
+              courseName={courseName}
+            />
+          }
+        />
+        <Route
+          path=":category"
+          element={
+            <ResourcesList
+              resources={resources}
+              updateResources={updateResources}
+              categoryTitles={categoryTitles}
+              courseName={courseName}
+              isAdmin={true}
+            />
+          }
+        />
+      </Routes>
 
-        <div className="flex justify-center mt-8">
-          <ButtonGradient title="Upload" onClick={() => setIsModalOpen(true)} />
-        </div>
-
-        {isModalOpen && (
-          <UploadModal
-            closeModal={() => setIsModalOpen(false)}
-            addFileToCategory={handleUpload}
-            categoryTitles={categoryTitles}
-          />
-        )}
+      <div className="flex justify-center mt-8 mb-8">
+        <ButtonGradient title="Upload" onClick={() => setIsModalOpen(true)} />
       </div>
-      
-        <ToastNotification />
 
-    </Router>
+      {isModalOpen && (
+        <UploadModal
+          closeModal={() => setIsModalOpen(false)}
+          addFileToCategory={handleUpload}
+          categoryTitles={categoryTitles}
+        />
+      )}
+
+      <ToastNotification />
+    </>
   );
 }
 
