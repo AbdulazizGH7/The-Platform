@@ -1,16 +1,18 @@
-import CourseSearchPage from "./Components/CourseSearchPage"
-import Hero from "./Components/Hero"
-import Navbar from "./Components/Navbar"
-import GroupsPage from "./Components/GroupsPage"
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom"
+import MainLayout from './layouts/MainLayout'
+import HomePage from "./pages/HomePage";
+import CourseSearchPage from './Components/CourseSearchPage'
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+  <Route path="/" element={<MainLayout></MainLayout>}>
+    <Route index element={<HomePage/>}></Route>
+  </Route>
+  )
+)
 
 function App() {
-
-  return (
-    <>
-    <Navbar></Navbar>
-    <GroupsPage></GroupsPage>
-    </>
-  )
+  return <RouterProvider router={router}></RouterProvider>
 }
 
-export default App
+export default App;
