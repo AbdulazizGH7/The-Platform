@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DropDown from './DropDown';
 import Button from './Button';
 
-function CourseSearchPage({ role = 'admin' }) {
+function CourseSearchPage({ role = 'student' }) {
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [selectedCourse, setSelectedCourse] = useState('');
     const [courses, setCourses] = useState([]);
@@ -158,9 +158,9 @@ function CourseSearchPage({ role = 'admin' }) {
                 </div>
             </div>
 
-            <div className='flex justify-center mt-4'>
+            {isAdmin && <div className='flex justify-center my-4'>
                 <Button px='16' title='Add Course' textSize='xl'></Button>
-            </div>
+            </div>}
 
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

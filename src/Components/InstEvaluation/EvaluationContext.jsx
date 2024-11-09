@@ -1,9 +1,9 @@
 import React, { createContext, useState } from 'react';
 
-export const CourseEvaluationContext = createContext();
+export const EvaluationContext = createContext();
 
-const CourseEvaluationProvider = ({ children }) => {
-  const [experiences, setExperiences] = useState([
+const EvaluationProvider = ({ children }) => {
+  const [experiences, setFeedbacks] = useState([
     {
       difficulty: 3,
       workload: 4,
@@ -20,18 +20,18 @@ const CourseEvaluationProvider = ({ children }) => {
     },
   ]);
 
-  const addExperience = (newExperience) => {
-    setExperiences((prev) => [...prev, newExperience]);
+  const addFeedback = (newFeedback) => {
+    setFeedbacks((prev) => [...prev, newFeedback]);
   };
 
   return (
-    <CourseEvaluationContext.Provider value={{ experiences, addExperience }}>
+    <EvaluationContext.Provider value={{ experiences, addFeedback }}>
       {children}
-    </CourseEvaluationContext.Provider>
+    </EvaluationContext.Provider>
   );
 };
 
-export default CourseEvaluationProvider;
+export default EvaluationProvider;
 
 
 
