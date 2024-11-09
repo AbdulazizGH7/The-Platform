@@ -17,7 +17,7 @@ const categoryTitles = {
   "extra": "Extra"
 };
 
-function ResourcesPage({ courseName = "SWE206" }) {
+function ResourcesPage({ courseName = "SWE206" , isAdmin = false }) {
   const [resources, setResources] = useState(getStoredResources());
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -61,7 +61,7 @@ function ResourcesPage({ courseName = "SWE206" }) {
               updateResources={updateResources}
               categoryTitles={categoryTitles}
               courseName={courseName}
-              isAdmin={true}
+              isAdmin={isAdmin}
             />
           }
         />
