@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CourseInfo from './CourseInfo';
 import ExperienceList from './ExperienceList';
+import CourseEvaluationProvider from './CourseEvaluationContext'
 
 function CourseEvaluationPage() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -17,7 +18,8 @@ function CourseEvaluationPage() {
 
   return (
     <main className="flex flex-col items-center px-4 py-6 sm:py-12 bg-gradient-to-r from-[#03002E] to-[#312E60]">
-      {/* Page Title */}
+      <CourseEvaluationProvider>
+        {/* Page Title */}
       <h1 data-layername="courseEvaluation" className="self-start mt-8 sm:mt-16 ml-2 sm:ml-6 text-4xl font-bold text-center text-white max-md:mt-10 max-md:ml-2.5">
         Course Evaluation
       </h1>
@@ -30,6 +32,7 @@ function CourseEvaluationPage() {
           <ExperienceList />
         </div>
       </section>
+      </CourseEvaluationProvider>
     </main>
   );
 }
