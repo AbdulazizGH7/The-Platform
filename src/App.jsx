@@ -1,15 +1,18 @@
-import CourseSearchPage from "./Components/CourseSearchPage"
-import Hero from "./Components/Hero"
-import Navbar from "./Components/Navbar"
-import CourseEvaluationPage from "./Components/CourseEvaluation/CourseEvaluationPage"
-function App() {
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom"
+import MainLayout from './layouts/MainLayout'
+import HomePage from "./pages/HomePage";
+import CourseSearchPage from './Components/CourseSearchPage'
 
-  return (
-    <>
-    <Navbar></Navbar>
-    <Hero></Hero>
-    </>
+const router = createBrowserRouter(
+  createRoutesFromElements(
+  <Route path="/" element={<MainLayout></MainLayout>}>
+    <Route index element={<HomePage/>}></Route>
+  </Route>
   )
+)
+
+function App() {
+  return <RouterProvider router={router}></RouterProvider>
 }
 
 export default App;
