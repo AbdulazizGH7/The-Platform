@@ -10,7 +10,7 @@ const categoryTitles = {
   "extra": "Extra"
 };
 
-function ResourcesList({ courseName = "Course Resources", resources, updateResources, isAdmin = true }) {
+function ResourcesList({ courseName = "Course Resources", resources, updateResources, isAdmin = false }) {
   const { category } = useParams();
   const displayTitle = categoryTitles[category] || "Resources";
   const [fileList, setFileList] = useState(resources[category] || []);
@@ -41,7 +41,7 @@ function ResourcesList({ courseName = "Course Resources", resources, updateResou
   return (
     <div className="w-full px-4 py-8 bg-gradient-to-b from-[#171352] to-[#7A4FBF] mt-8">
       <div className="mb-4">
-        <Link to="/" className="text-blue-200 hover:underline">
+        <Link to="/resources" className="text-blue-200 hover:underline">
           &larr; Back to Resources
         </Link>
       </div>

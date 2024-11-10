@@ -1,16 +1,14 @@
 import React from 'react';
-import Navbar from './Navbar';
-import ActionButtonGrid from './ActionButtonGrid';
+import Navbar from '../Components/Navbar';
+import ActionButtonGrid from '../Components/ActionButtonGrid';
 
 const CoursePage = () => {
   return (
     <div className="min-h-screen text-white">
-      <Navbar />
+      
       <CourseDescription />
       <ActionButtonGrid />
-      <footer className="text-center py-4 border-t border-gray-700">
-        <p>Contact us</p>
-      </footer>
+      
     </div>
   );
 };
