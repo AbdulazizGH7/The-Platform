@@ -1,0 +1,27 @@
+{
+    "experiences": [
+      {
+        "experienceId": 1,
+        "courseId": 101,
+        "userId": 2,
+        "metrics": {
+          "difficulty": 3,
+          "workload": 4,
+          "resources": 5
+        },
+        "description": "The course was very engaging and relevant."
+      },
+      {
+        "experienceId": 2,
+        "courseId": 101,
+        "userId": 2,
+        "metrics": {
+          "difficulty": 4,
+          "engagement": 3,
+          "relevance": 4,
+          "workload": 4
+        },
+        "description": "Challenging but rewarding."
+      }
+    ]
+  }

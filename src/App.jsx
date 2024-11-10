@@ -1,10 +1,35 @@
-import CourseSearchPage from "./Components/CourseSearchPage"
-import Hero from "./Components/Hero"
-import Navbar from "./Components/Navbar"
-import GroupsPage from "./Components/GroupsPage"
-import CoursePage from "./Components/CoursePage"
+
+import { Route, Link, Navigate, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
+import MainLayout from './layouts/MainLayout';
+import HomePage from "./pages/HomePage";
+import CourseSearchPage from './pages/CourseSearchPage';
+import LoginPage from "./pages/LoginPage";
+import CoursePage from './pages/CoursePage'
+import ResourcesPage from "./Components/Resources/ResourcesPage";
+import ResourcesList from "./Components/Resources/ResourcesList";
+import { DataProvider } from "./utilities/DataContext";
 
 function App() {
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<MainLayout />}>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/courseSearch" element={<CourseSearchPage />} />
+          <Route path="/course/:courseId" element={<CoursePage/>}/>
+          <Route path="/course/:courseId/groups"/>
+          <Route path="/group/:groupId"/>
+          <Route path="/course/:courseId/experiences"/>
+          <Route path="/course/:courseId/instructors"/>
+          <Route path="/instructor/:instructorId"/>
+          <Route path="/course/:courseId/resources" element={<ResourcesPage />} />
+          <Route path="/course/:courseId/resources/:category" element={<ResourcesList />} />
+        </Route>
+      </>
+    )
+  );
 
   return (
     <>

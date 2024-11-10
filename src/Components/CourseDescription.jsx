@@ -1,6 +1,7 @@
 import React from 'react'
 import { useData } from '../utilities/DataContext';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 function CourseDescription() {
 
@@ -17,9 +18,26 @@ function CourseDescription() {
     <p className="text-gray-300 mb-4 text-sm md:text-base">
       {course.description}
     </p>
-    <p className="text-sm md:text-base">
-      Pre-requisites: <a href="#ICS108" className="text-indigo-400 underline">ICS108</a>
-    </p>
+    {course.prerequisites.length > 0 ? (
+                    <ul className="list-disc ml-6">
+                      <h4>prerequisites:</h4>
+                        {course.prerequisites.map((prereqId) => {
+                            const prereqCourse = courses.find((c) => c.courseId === prereqId);
+                            
+                            return  prereqCourse ? (
+                                <li key={prereqId}>
+                                     <Link
+                                        to={`/course/${prereqId}`}
+                                        className="text-blue-500 hover:underline"
+                                    >
+                                        {prereqCourse.courseCode}
+                                    </Link>
+                                </li>
+                            ) : null;
+                        })}
+                    </ul>
+                ) : (
+                    <p>No prerequisite courses</p>)}
     </section>
   )
 }

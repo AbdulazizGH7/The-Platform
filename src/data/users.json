@@ -2,6 +2,8 @@
     "users": [
       {
         "id": 1,
+        "email": "admin@kfupm.com",
+        "password": "admin",
         "username": "admin1",
         "role": "admin",
         "courses": [],
@@ -9,6 +11,8 @@
       },
       {
         "id": 2,
+        "email": "student@kfupm.com",
+        "password": "student",
         "username": "student1",
         "role": "student",
         "courses": [101, 102],
@@ -16,6 +20,8 @@
       },
       {
         "id": 3,
+        "email": "instructor@kfupm.com",
+        "password": "instructor",
         "username": "instructor1",
         "role": "instructor",
         "courses": [101],
