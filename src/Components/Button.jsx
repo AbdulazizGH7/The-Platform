@@ -1,16 +1,15 @@
-import React from 'react'
+import React from 'react';
 
-function Button({title ="Button", textSize = "base", px = "4", py = "2", behavior}) {
-
+function Button({ title = "Button", textSize = "base", px = "4", py = "2", behavior, isDisabled = false }) {
   const sizeClasses = {
     sm: "text-sm",
     base: "text-base",
     lg: "text-lg",
     xl: "text-xl"
-  }
+  };
 
   const pxClasses = {
-    "2": "px-2",  
+    "2": "px-2",
     "3": "px-3",
     "4": "px-4",
     "5": "px-5",
@@ -28,7 +27,7 @@ function Button({title ="Button", textSize = "base", px = "4", py = "2", behavio
   };
 
   const pyClasses = {
-    "2": "py-2", 
+    "2": "py-2",
     "3": "py-3",
     "4": "py-4",
     "5": "py-5",
@@ -41,13 +40,22 @@ function Button({title ="Button", textSize = "base", px = "4", py = "2", behavio
     "12": "py-12",
   };
 
-
-
-
   return (
-    <button className={`text-gray-100 rounded-3xl text-center font-bold bg-[#8D8DDA] hover:btn-hover ${sizeClasses[textSize]} ${pxClasses[px]} ${pyClasses[py]}`}
-    onClick={behavior}>{title}</button>
-  )
+    <>
+    {!isDisabled ? (<button
+      className={`text-gray-100 rounded-3xl text-center font-bold bg-[#8D8DDA] hover:btn-hover ${sizeClasses[textSize]} ${pxClasses[px]} ${pyClasses[py]}`}
+      onClick={behavior}
+      >
+      {title}
+    </button>) : (<button
+      className={`text-white rounded-3xl text-center font-bold hover:btn-hover ${sizeClasses[textSize]} ${pxClasses[px]} ${pyClasses[py]} disabled:bg-gray-300 cursor-not-allowed`}
+      onClick={behavior}
+      disabled
+      >
+      {title}
+    </button>) }
+    </>
+  );
 }
 
-export default Button
+export default Button;
