@@ -18,7 +18,6 @@ function SectionCard({title, items}) {
       items.includes(group.groupId)
     )
   }
-  console.log(filteredData)
 
 
   return (
@@ -30,7 +29,7 @@ function SectionCard({title, items}) {
             {items.length > 0 ? 
                 filteredData.map((data) => (
                     <li className='first:mt-2 last:mb-4' key={title === "Courses" ? data.courseId : data.groupId}>
-                        <Link to={title === "Courses" ? `/course/${data.courseId}` : `/course/${data.courseId}/groups/${data.groupId}`}><ItemCard text={title === "Courses" ? data.courseName : data.groupName}></ItemCard></Link>
+                        <Link to={title === "Courses" ? `/course/${data.courseId}` : `/course/${data.courseId}/groups/${data.groupId}`}><ItemCard text={title === "Courses" ? data.courseCode : data.groupName}></ItemCard></Link>
                     </li>
             )) : title === "Courses" ? <div className='min-h-[200px] flex items-center justify-center'>
             <p className='text-gray-100 text-xl sm:text-2xl md:text-3xl font-semibold px-1'>

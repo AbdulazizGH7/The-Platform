@@ -3,7 +3,7 @@ import MainLayout from './layouts/MainLayout';
 import HomePage from "./pages/HomePage";
 import CourseSearchPage from './pages/CourseSearchPage';
 import LoginPageTemp from "./pages/LoginPageTemp";
-import { UserProvider } from './utils/UserContext';
+import { DataProvider } from "./utilities/DataContext";
 
 function App() {
   const router = createBrowserRouter(
@@ -20,9 +20,9 @@ function App() {
   );
 
   return (
-    <UserProvider>
+    <DataProvider>
       <RouterProvider router={router} />
-    </UserProvider>
+    </DataProvider>
   );
 }
 

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../utils/UserContext';
+import { useData } from '../utilities/DataContext';
 
 function LoginPageTemp() {
   
   const [name, setName] = useState('');
-  const { setUser } = useUser();
+  const { loadUserData } = useData();
   const navigate = useNavigate();
 
   const handleLogin = () => {
     if (name) {
-      setUser({ name }); // Save the user name to context
-      navigate('/home'); // Redirect to the Home page
+      loadUserData(name);
+      navigate('/home'); 
     }
   };
 
