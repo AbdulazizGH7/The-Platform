@@ -1,0 +1,20 @@
+{
+    "instructors": [
+      {
+        "instructorId": 3,
+        "name": "Dr. Smith",
+        "img": "//",
+        "courses": [101, 102],
+        "reviews": [
+          {
+            "metrics": {
+              "Personality": 5,
+              "Teaching": 4,
+              "Grading": 3
+            },
+            "review": "Dr. Smith explains concepts clearly."
+          }
+        ]
+      }
+    ]
+  }
