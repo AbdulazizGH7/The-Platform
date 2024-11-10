@@ -1,0 +1,85 @@
+{
+    "courses": [
+      {
+            "courseId": 99,
+            "courseCode": "ICS-104",
+            "courseName": "Introduction to Programming in Python and C",
+            "description": "Overview of computer hardware and software. Programming in Python with emphasis on basic program constructs: variables, assignments, expressions, decision structures, looping, functions, lists, files and exceptions; Introduction to objects and classes. Programming in C with emphasis on pointers and functions with output parameters. Simple multidisciplinary problem solving in science, engineering and business.",
+            "prerequisites": [],
+            "instructors": [],
+            "experiences": [],
+            "groups": [],
+            "resources": {
+              "oldExams": [],
+              "notes": [],
+              "quizzes": [],
+              "other": []
+            }
+      },
+      {
+            "courseId": 100,
+            "courseCode": "ICS-108",
+            "courseName": "Object-Oriented Programming",
+            "description": "Advanced object-oriented programming; Inheritance; Polymorphism; Abstract classes and interfaces; Generic and collection classes; File input and output; Exception handling; GUI and event-driven programming; Recursion; Searching and sorting.",
+            "prerequisites": [99],
+            "instructors": [],
+            "experiences": [],
+            "groups": [],
+            "resources": {
+              "oldExams": [],
+              "notes": [],
+              "quizzes": [],
+              "other": []
+            }
+      },
+      {
+        "courseId": 101,
+        "courseCode": "ICS-202",
+        "courseName": "Data Structures and Algorithms",
+        "description": "Review of object-oriented concepts; Basic algorithms analysis; Fundamental data structures implementation strategies for stacks, queues, and linked lists; Recursion; Implementation strategies for tree and graph algorithms; Greedy Algorithms; Hash tables; Applications of data structures (e.g., data compression and string matching).",
+        "prerequisites": [100],
+        "instructors": [3],
+        "experiences": [],
+        "groups": [],
+        "resources": {
+          "oldExams": [],
+          "notes": [],
+          "quizzes": [],
+          "other": []
+        }
+      },
+      {
+        "courseId": 102,
+        "courseCode": "ICS-253",
+        "courseName": "Discrete Structures",
+        "description": "Propositional Logic, Propositional Equivalence, Predicates and Quantifiers, Nested Quantifiers, Rules of Inference, Introduction to Proofs; Sets, Set Operations, Functions, Sequences and Summations; Mathematical Induction, Strong Induction, Recursive Definitions and Structural Induction; Basics of Counting, Pigeonhole Principle, Permutations and Combinations, Binomial Coefficients, Discrete Probability, Probability Theory; Recurrence Relations, Solving Linear Recurrence Relations, Generating Functions, Inclusion-Exclusion.",
+        "prerequisites": [99],
+        "instructors": [],
+        "experiences": [],
+        "groups": [],
+        "resources": {
+          "oldExams": [],
+          "notes": [],
+          "quizzes": [],
+          "other": []
+        }
+      },
+      {
+        "courseId": 103,
+        "courseCode": "ICS-353",
+        "courseName": "Design and Analysis of Algorithms",
+        "description": "Basic algorithmic analysis; Analysis of iterative and recursive algorithms; Advanced algorithmic design techniques (induction, divide and conquer, dynamic programming, backtracking); The complexity classes P and NP; Basic computability; Parallel algorithms",
+        "prerequisites": [101,102],
+        "instructors": [],
+        "experiences": [],
+        "groups": [],
+        "resources": {
+          "oldExams": [],
+          "notes": [],
+          "quizzes": [],
+          "other": []
+        }
+      }
+    ]
+  }
+  

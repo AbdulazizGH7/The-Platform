@@ -1,0 +1,15 @@
+{
+    "departments": [
+      {
+        "departmentId": 1,
+        "name": "Information and Computer Science",
+        "courses": [99,100,101,102,103]
+      },
+      {
+        "departmentId": 2,
+        "name": "Mathematics",
+        "courses": []
+      }
+    ]
+  }
+  
