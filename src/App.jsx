@@ -3,6 +3,7 @@ import MainLayout from './layouts/MainLayout';
 import HomePage from "./pages/HomePage";
 import CourseSearchPage from './pages/CourseSearchPage';
 import LoginPageTemp from "./pages/LoginPageTemp";
+import CoursePage from './pages/CoursePage'
 import { DataProvider } from "./utilities/DataContext";
 
 function App() {
@@ -14,6 +15,12 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/courseSearch" element={<CourseSearchPage />} />
+          <Route path="/course/:courseId" element={<CoursePage/>}/>
+          <Route path="/course/:courseId/groups"/>
+          <Route path="/group/:groupId"/>
+          <Route path="/course/:courseId/experiences"/>
+          <Route path="/course/:courseId/instructors"/>
+          <Route path="/instructor/:instructorId"/>
         </Route>
       </>
     )
