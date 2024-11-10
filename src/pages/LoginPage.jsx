@@ -15,40 +15,33 @@ function LoginPage() {
 
   const validateEmailFormat = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const result = emailRegex.test(email);
+    setEmailError(!result);
+    return result;
   };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value)
-  }
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value)
-  }
 
   const handleLogin = () => {
     setEmailError(false);
     setPasswordError(false);
     setErrorMessage('');
-
+  
     if (!email || !password) {
       setEmailError(!email);
       setPasswordError(!password);
       setErrorMessage('Email and Password cannot be empty');
       return;
     }
-
+  
     if (!validateEmailFormat(email)) {
-      setEmailError(true);
       setErrorMessage('Invalid email format');
       return;
     }
-    
-    if (email === 'test@example.com' && password === 'password') {
-      loadUserData(name);
+  
+    // Attempt to load user data with email and password
+    if (loadUserData(email, password)) {
       navigate('/home');
     } else {
-      setErrorMessage('Either Email or Password is wrong');
+      setErrorMessage('Either Email or Password is incorrect');
     }
   };
 
@@ -78,14 +71,17 @@ function LoginPage() {
             <input
               type="email"
               placeholder="Enter your Email"
-              className={`w-full p-2 rounded-md text-gray-700 text-sm ${emailError ? 'border-2 border-red-500' : ''}`}
+              className={`w-full p-2 rounded-md text-gray-700 text-sm ${emailError ? 'border-4 border-red-500' : ''}`}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                validateEmailFormat(e.target.value)
+              }}
             />
             <input
               type="password"
               placeholder="Enter your Password"
-              className={`w-full p-2 rounded-md text-gray-700 text-sm ${passwordError ? 'border-2 border-red-500' : ''}`}
+              className={`w-full p-2 rounded-md text-gray-700 text-sm ${passwordError ? 'border-4 border-red-500' : ''}`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

@@ -2,7 +2,7 @@ import { Route, Link, Navigate, createBrowserRouter, createRoutesFromElements, R
 import MainLayout from './layouts/MainLayout';
 import HomePage from "./pages/HomePage";
 import CourseSearchPage from './pages/CourseSearchPage';
-import LoginPageTemp from "./pages/LoginPageTemp";
+import LoginPage from "./pages/LoginPage";
 import CoursePage from './pages/CoursePage'
 import { DataProvider } from "./utilities/DataContext";
 
@@ -11,7 +11,7 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<LoginPageTemp />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<MainLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/courseSearch" element={<CourseSearchPage />} />
