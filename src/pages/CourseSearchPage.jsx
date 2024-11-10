@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import DropDown from './DropDown';
-import Button from './Button';
+import DropDown from '../Components/DropDown';
+import Button from '../Components/Button';
 
 function CourseSearchPage({ role = 'student' }) {
     const [selectedDepartment, setSelectedDepartment] = useState('');
