@@ -1,6 +1,6 @@
 import React from 'react'
 import ItemCard from './ItemCard'
-
+ 
 function SectionCard({title, items}) {
   return (
     <div className='section-card rounded-md text-center w-full sm:max-w-[600px] 2xl:max-w-[900px] lg:self-stretch'>
