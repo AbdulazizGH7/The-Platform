@@ -1,0 +1,19 @@
+{
+    "groups": [
+      {
+        "groupId": 201,
+        "courseId": 101,
+        "groupName": "ICS-202-Group1",
+        "members": [2],
+        "instructor": 3,
+        "messages": [
+          {
+            "senderId": 3,
+            "message": "Welcome to the course group!",
+            "timestamp": "2024-11-09T10:00:00Z"
+          }
+        ]
+      }
+    ]
+  }
+  

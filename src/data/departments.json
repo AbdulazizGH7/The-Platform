@@ -1,0 +1,21 @@
+{
+    "departments": [
+      {
+        "departmentId": 1,
+        "name": "Information and Computer Science",
+        "courses":[
+          {"courseID": 99, "courseCode": "ICS-104", "courseName": "Introduction to Programming in Python and C"},
+          {"courseID": 100, "courseCode": "ICS-108", "courseName": "Object-Oriented Programming"},
+          {"courseID": 101, "courseCode": "ICS-202", "courseName": "Data Structures and Algorithms"},
+          {"courseID": 102, "courseCode": "ICS-253", "courseName": "Discrete Structures"},
+          {"courseID": 103, "courseCode": "ICS-353", "courseName": "Design and Analysis of Algorithms"}
+        ]
+      },
+      {
+        "departmentId": 2,
+        "name": "Mathematics",
+        "courses": []
+      }
+    ]
+  }
+  

@@ -1,7 +1,7 @@
 import React from 'react';
 import './ButtonGradient.css';
 
-function ButtonGradient({ title = "Click me!" }) {
+function ButtonGradient({ title = "Click me!", onClick }) {
 
     const textClasses = `
         relative z-2
@@ -13,7 +13,7 @@ function ButtonGradient({ title = "Click me!" }) {
         `
 
   return (
-    <button className="button-gradient">
+    <button className="button-gradient" onClick={onClick}>
       <span className={textClasses}>
         {title}
       </span>

@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-outfit {
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+@layer components {
+  .resources-card {
+    @apply w-full aspect-square flex-shrink-0 rounded-[10px] flex items-center justify-center m-2 bg-[linear-gradient(90deg,_#171352_0%,_#6E429D_100%)] [container-type:size];
+  }
+
+  .resources-card-text {
+    @apply text-white text-center font-outfit font-medium leading-tight tracking-normal px-4;
+  }
+
+  /* Define container queries */
+  @container (min-width: 0px) {
+    .resources-card-text {
+      @apply text-2xl;
+    }
+  }
+
+  @container (min-width: 300px) {
+    .resources-card-text {
+      @apply text-3xl;
+    }
+  }
+
+  @container (min-width: 400px) {
+    .resources-card-text {
+      @apply text-4xl;
+    }
+  }
+
+  @container (min-width: 500px) {
+    .resources-card-text {
+      @apply text-5xl;
+    }
+  }
+}

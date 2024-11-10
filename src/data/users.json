@@ -1,0 +1,26 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "username": "admin1",
+        "role": "admin",
+        "courses": [],
+        "groups": []
+      },
+      {
+        "id": 2,
+        "username": "student1",
+        "role": "student",
+        "courses": [101, 102],
+        "groups": [201]
+      },
+      {
+        "id": 3,
+        "username": "instructor1",
+        "role": "instructor",
+        "courses": [101],
+        "groups": [201]
+      }
+    ]
+}
+  
