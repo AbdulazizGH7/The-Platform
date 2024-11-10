@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useData } from '../utilities/DataContext';
 import GroupCard from '../Components/GroupCard.jsx';
 import Popup from '../Components/Popup.jsx';
 import Button from '../Components/Button.jsx';
 
 const GroupsPage = ({ userType }) => {
-  const [groups, setGroups] = useState([
-    'Sec 2 & 5',
-    'Sec 7',
-    'Prof. Ahmed Sec',
-    'Sec 1',
-  ]);
+  const { courseId } = useParams(); // Get courseId from URL
+  const { courses } = useData(); // Retrieve data using useData
+  const [groups, setGroups] = useState([]);
   const [enrolledGroups, setEnrolledGroups] = useState([]);
   const [showCreateGroupPopup, setShowCreateGroupPopup] = useState(false);
   const [showRemoveGroupPopup, setShowRemoveGroupPopup] = useState(false);
@@ -20,6 +19,14 @@ const GroupsPage = ({ userType }) => {
   // Determine if the user has permissions based on userType
   const isAdmin = userType === 'admin';
   const isInstructor = userType === 'instructor';
+
+  useEffect(() => {
+    // Find the selected course and set its groups
+    const selectedCourse = courses.find((course) => course.courseId === Number(courseId));
+    if (selectedCourse) {
+      setGroups(selectedCourse.groups || []);
+    }
+  }, [courseId, courses]);
 
   const handleRemoveGroup = (group) => {
     setSelectedGroup(group);

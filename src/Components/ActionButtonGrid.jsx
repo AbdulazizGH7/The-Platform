@@ -1,22 +1,30 @@
 import React from 'react';
+import { useData } from '../utilities/DataContext';
+import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 // Main ActionButtonGrid Component
-const ActionButtonGrid = () => (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 md:p-8 lg:p-12">
-        <ActionButton title="Experiences" icon={<ExperienceIcon />} />
-        <ActionButton title="Instructors" icon={<InstructorIcon />} />
-        <ActionButton title="Groups" icon={<GroupIcon />} />
-        <ActionButton title="Resources" icon={<ResourceIcon />} />
-      </div>
-);
+const ActionButtonGrid = () => {
+  const { courseId } = useParams(); // Get courseId from URL
 
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 md:p-8 lg:p-12">
+      <ActionButton title="Experiences" icon={<ExperienceIcon />} link={`/course/${courseId}/experiences`} />
+      <ActionButton title="Instructors" icon={<InstructorIcon />} link={`/course/${courseId}/instructors`} />
+      <ActionButton title="Groups" icon={<GroupIcon />} link={`/course/${courseId}/groups`} />
+      <ActionButton title="Resources" icon={<ResourceIcon />} link={`/course/${courseId}/resources`} />
+    </div>
+  );
+};
 // ActionButton Component
-const ActionButton = ({ title, icon }) => (
+const ActionButton = ({ title, icon, link }) => (
+  <Link to={link}>
     <div className="aspect-square flex flex-col items-center justify-center bg-gradient-to-t from-purple-900 to-blue-1000 hover:bg-purple-600 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg transition duration-300">
       <div className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 mb-4 flex items-center justify-center">{icon}</div>
       <span className="text-lg md:text-xl lg:text-2xl font-semibold mt-2 md:mt-4">{title}</span>
     </div>
-);
+  </Link>
+)
 
 // SVG Icons
 const ExperienceIcon = () => (
