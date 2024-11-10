@@ -10,7 +10,14 @@
             "experiences": [],
             "groups": [],
             "resources": {
-              "oldExams": [],
+              "oldExams": [
+                {
+                  "name": "test.txt",
+                  "type": "TXT",
+                  "size": "0 KB",
+                  "dateUploaded": "2024-11-10"
+                }
+              ],
               "notes": [],
               "quizzes": [],
               "other": []

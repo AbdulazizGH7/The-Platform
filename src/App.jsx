@@ -4,6 +4,9 @@ import HomePage from "./pages/HomePage";
 import CourseSearchPage from './pages/CourseSearchPage';
 import LoginPage from "./pages/LoginPage";
 import CoursePage from './pages/CoursePage'
+import ResourcesPage from "./Components/Resources/ResourcesPage";
+import ResourcesSection from "./Components/Resources/ResourcesSection";
+import ResourcesList from "./Components/Resources/ResourcesList";
 import { DataProvider } from "./utilities/DataContext";
 
 function App() {
@@ -21,6 +24,8 @@ function App() {
           <Route path="/course/:courseId/experiences"/>
           <Route path="/course/:courseId/instructors"/>
           <Route path="/instructor/:instructorId"/>
+          <Route path="/course/:courseId/resources" element={<ResourcesPage />} />
+          <Route path="/course/:courseId/resources/:category" element={<ResourcesList />} />
         </Route>
       </>
     )

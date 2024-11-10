@@ -1,38 +1,38 @@
 // src/Components/Resources/ResourcesPage.jsx
 import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ResourcesSection from './ResourcesSection';
-import ResourcesList from './ResourcesList';
 import ButtonGradient from '../ButtonGradient/ButtonGradient';
 import UploadModal from './UploadModal';
 import { toast } from 'react-toastify';
-import { getStoredResources, saveResources } from '../../utils/localStorageUtils';
 import 'react-toastify/dist/ReactToastify.css';
 import ToastNotification from './ToastNotification';
+import { useData } from '../../utilities/DataContext';
 
 const categoryTitles = {
-  "old-exams": "Old Exams",
+  "oldExams": "Old Exams",
   "notes": "Notes",
   "quizzes": "Quizzes",
-  "extra": "Extra"
+  "other": "Extra"
 };
 
-function ResourcesPage({ courseName = "SWE206" , isAdmin = false }) {
-  const [resources, setResources] = useState(getStoredResources());
+function ResourcesPage() {
+  const { courseId } = useParams();
+  const { courses } = useData();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const updateResources = (updatedResources) => {
-    setResources(updatedResources);
-    saveResources(updatedResources);
-  };
+  // Find the course by courseId
+  const course = courses.find(course => course.courseId === parseInt(courseId));
+  const courseName = course ? course.courseCode : 'Course Resources';
 
-  const handleUpload = (selectedCategory, newFile) => {
-    const updatedResources = {
-      ...resources,
-      [selectedCategory]: [...(resources[selectedCategory] || []), newFile],
-    };
-    updateResources(updatedResources);
-    toast.success('File uploaded successfully!');
+  // Function to handle adding a new file to a category
+  const addFileToCategory = (selectedCategory, newFile) => {
+    if (course) {
+      // Append the new file to the selected category in the course's resources
+      course.resources[selectedCategory].push(newFile);
+      
+      toast.success('File uploaded successfully!');
+    }
   };
 
   return (
@@ -41,31 +41,7 @@ function ResourcesPage({ courseName = "SWE206" , isAdmin = false }) {
         {courseName} Resources
       </h1>
 
-      <Routes>
-        {/* Use relative paths without leading / */}
-        <Route
-          index
-          element={
-            <ResourcesSection
-              resources={resources}
-              categoryTitles={categoryTitles}
-              courseName={courseName}
-            />
-          }
-        />
-        <Route
-          path=":category"
-          element={
-            <ResourcesList
-              resources={resources}
-              updateResources={updateResources}
-              categoryTitles={categoryTitles}
-              courseName={courseName}
-              isAdmin={isAdmin}
-            />
-          }
-        />
-      </Routes>
+      <ResourcesSection resources={course.resources} categoryTitles={categoryTitles} courseId={courseId} />
 
       <div className="flex justify-center mt-8 mb-8">
         <ButtonGradient title="Upload" onClick={() => setIsModalOpen(true)} />
@@ -74,7 +50,7 @@ function ResourcesPage({ courseName = "SWE206" , isAdmin = false }) {
       {isModalOpen && (
         <UploadModal
           closeModal={() => setIsModalOpen(false)}
-          addFileToCategory={handleUpload}
+          addFileToCategory={addFileToCategory}
           categoryTitles={categoryTitles}
         />
       )}
