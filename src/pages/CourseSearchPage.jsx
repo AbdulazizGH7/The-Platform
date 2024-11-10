@@ -1,59 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import DropDown from '../Components/DropDown';
 import Button from '../Components/Button';
+import { Link } from 'react-router-dom';
+import { useData } from '../utilities/DataContext';
 
-function CourseSearchPage({ role = 'student' }) {
+function CourseSearchPage() {
+
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [selectedCourse, setSelectedCourse] = useState('');
     const [courses, setCourses] = useState([]);
-    const [width, setWidth] = useState(window.innerWidth);
     const [showModal, setShowModal] = useState(false);
     const [courseToRemove, setCourseToRemove] = useState(null);
-    const [data, setData] = useState({
-        departments: [
-            {
-                name: "Mathematics",
-                courses: [
-                    { courseID: 1, courseCode: "MATH-101", courseName: "Calculus I" },
-                    { courseID: 2, courseCode: "MATH-102", courseName: "Calculus II" },
-                    { courseID: 3, courseCode: "MATH-201", courseName: "Calculus III" }
-                ]
-            },
-            {
-                name: "Information & Computer Science",
-                courses: [
-                    { courseID: 4, courseCode: "ICS-104", courseName: "Introduction to Programming in Python and C" },
-                    { courseID: 5, courseCode: "ICS-108", courseName: "Object-Oriented Programming" },
-                    { courseID: 6, courseCode: "ICS-202", courseName: "Data Structures and Algorithms" },
-                ]
-            },
-            {
-                name: "Islamic studies",
-                courses: []
-            }
-        ]
-    });
 
-    useEffect(() => {
-        window.addEventListener("resize", () => setWidth(window.innerWidth));
-        return () => {
-            window.removeEventListener("resize", () => setWidth(window.innerWidth));
-        }
-    }, []);
+    const {departments, setDepartments} = useData()
+    const {user, setUser} = useData()
 
-    const isAdmin = role === "admin";
+    console.log(departments)
+
+  
+    const isAdmin = user.role === "admin";
 
     function handleDepartmentChange(e) {
         const departmentName = e.target.value;
         setSelectedDepartment(departmentName);
         setSelectedCourse('');
-        const department = data.departments.find(dep => dep.name === departmentName);
+        const department = departments.find(dep => dep.name === departmentName);
         setCourses(department ? department.courses : []);
     }
 
     function handleCourseChange(e) {
         const courseCode = e.target.value;
         setSelectedCourse(courseCode);
+    }
+
+    function handleAddCourse(courseID){
+        setUser({...user, courses: [...user.courses, courseID]})
     }
 
     function openRemoveModal(course) {
@@ -66,17 +47,15 @@ function CourseSearchPage({ role = 'student' }) {
         setCourses(prevCourses => prevCourses.filter(c => c.courseID !== courseToRemove.courseID));
 
         // Remove the course from the original data structure
-        setData(prevData => ({
-            departments: prevData.departments.map(department => {
-                if (department.name === selectedDepartment) {
-                    return {
-                        ...department,
-                        courses: department.courses.filter(c => c.courseID !== courseToRemove.courseID)
-                    };
-                }
-                return department;
-            })
-        }));
+        setDepartments(prevDepartments => prevDepartments.map(dep => {
+            if (dep.name === selectedDepartment) {
+                return {
+                    ...dep,
+                    courses: dep.courses.filter(c => c.courseID !== courseToRemove.courseID)
+                };
+            }
+            return dep;
+        }))
 
         setShowModal(false);
         setCourseToRemove(null);
@@ -102,7 +81,7 @@ function CourseSearchPage({ role = 'student' }) {
                     <div className='mt-4 flex flex-col gap-3 sm:flex-row sm:justify-between '>
                         <DropDown
                             label={"Department"}
-                            options={data.departments.map(department => ({
+                            options={departments.map(department => ({
                                 label: department.name,
                                 value: department.name
                             }))}
@@ -140,10 +119,10 @@ function CourseSearchPage({ role = 'student' }) {
                                                 <td className="px-4 py-2 whitespace-nowrap lg:text-lg">{course.courseCode}</td>
                                                 <td className="px-4 py-2 whitespace-nowrap w-full lg:text-lg">{course.courseName}</td>
                                                 <td className="px-4 py-2 whitespace-nowrap">
-                                                    <Button title='Info' px='8'></Button>
+                                                    <Link to={`/course/${course.courseID}`}><Button title='Info' px='8'></Button></Link>
                                                 </td>
                                                 <td className="px-4 py-2 whitespace-nowrap">
-                                                    <Button title='Add' px='8'></Button>
+                                                    <Button title={user.courses.includes(course.courseID) ? "Added" : "Add"} px='8' isDisabled={user.courses.includes(course.courseID)} behavior={() => handleAddCourse(course.courseID)}></Button>
                                                 </td>
                                                 <td className={`px-4 py-2 whitespace-nowrap ${isAdmin ? "block" : "hidden"}`}>
                                                     <Button title='Remove' px='8' behavior={() => openRemoveModal(course)}></Button>
