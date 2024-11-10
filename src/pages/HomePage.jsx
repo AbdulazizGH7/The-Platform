@@ -4,9 +4,6 @@ import CourseGroupLayout from '../Components/CourseGroupLayout'
 import { useUser } from '../utils/UserContext';
 
 function HomePage() {
-  
-  const { user } = useUser();
-  console.log(user)
 
   return (
     <>
