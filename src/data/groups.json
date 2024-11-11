@@ -13,6 +13,19 @@
             "timestamp": "2024-11-09T10:00:00Z"
           }
         ]
+      },{
+        "groupId": 203,
+        "courseId": 100,
+        "groupName": "ICS-108-Group1",
+        "members": [2],
+        "instructor": 3,
+        "messages": [
+          {
+            "senderId": 3,
+            "message": "Welcome to the course group!",
+            "timestamp": "2024-11-09T10:00:00Z"
+          }
+        ]
       }
     ]
   }

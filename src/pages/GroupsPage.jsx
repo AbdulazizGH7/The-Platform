@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useData } from '../utilities/DataContext';
+import React, { useState } from 'react';
 import GroupCard from '../Components/GroupCard.jsx';
 import Popup from '../Components/Popup.jsx';
 import Button from '../Components/Button.jsx';
+import { useData } from '../utilities/DataContext';
+import groupsData from '../data/groups.json';
+import coursesData from '../data/courses.json';
 
-const GroupsPage = ({ userType }) => {
-  const { courseId } = useParams(); // Get courseId from URL
-  const { courses } = useData(); // Retrieve data using useData
-  const [groups, setGroups] = useState([]);
+const GroupsPage = () => {
+  const { user } = useData();
+  const [groups, setGroups] = useState([
+    'Sec 2 & 5',
+    'Sec 7',
+    'Prof. Ahmed Sec',
+    'Sec 1',
+  ]);
   const [enrolledGroups, setEnrolledGroups] = useState([]);
   const [showCreateGroupPopup, setShowCreateGroupPopup] = useState(false);
   const [showRemoveGroupPopup, setShowRemoveGroupPopup] = useState(false);
@@ -16,17 +21,8 @@ const GroupsPage = ({ userType }) => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [newGroup, setNewGroup] = useState('');
 
-  // Determine if the user has permissions based on userType
-  const isAdmin = userType === 'admin';
-  const isInstructor = userType === 'instructor';
-
-  useEffect(() => {
-    // Find the selected course and set its groups
-    const selectedCourse = courses.find((course) => course.courseId === Number(courseId));
-    if (selectedCourse) {
-      setGroups(selectedCourse.groups || []);
-    }
-  }, [courseId, courses]);
+  const isAdmin = user?.role === 'admin';
+  const isInstructor = user?.role === 'instructor';
 
   const handleRemoveGroup = (group) => {
     setSelectedGroup(group);
@@ -84,7 +80,7 @@ const GroupsPage = ({ userType }) => {
               <GroupCard
                 key={index}
                 title={group}
-                onRemove={handleRemoveGroup}
+                onRemove={isAdmin ? handleRemoveGroup : null} // Show remove option only if user is Admin
                 onJoin={handleJoinGroup}
                 isAdmin={isAdmin}
               />
