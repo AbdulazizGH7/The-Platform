@@ -33,8 +33,9 @@ function App() {
 
   return (
     <>
-    <Navbar></Navbar>
-    <Hero></Hero>
+    <DataProvider>
+      <RouterProvider router={router} />
+    </DataProvider>
     </>
   )
 }
