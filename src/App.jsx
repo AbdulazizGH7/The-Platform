@@ -10,6 +10,7 @@ import ResourcesList from "./Components/Resources/ResourcesList";
 import { DataProvider } from "./utilities/DataContext";
 import GroupsPage from './pages/GroupsPage'
 import AnnouncementsPage from "./pages/AnnouncementsPage"
+import SignUpPage from "./pages/SignUpPage";
 
 function App() {
   const router = createBrowserRouter(
@@ -17,6 +18,7 @@ function App() {
       <>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route path="/" element={<MainLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/courseSearch" element={<CourseSearchPage />} />
