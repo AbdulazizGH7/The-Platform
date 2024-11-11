@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { EvaluationContext } from './EvaluationContext';
 import Create from '../../assets/Images/Create.svg';
+import { useData } from '../../utilities/DataContext';
+import { useParams } from 'react-router-dom';
 
 const StarRating = ({ count, setRating, isReadOnly = false }) => {
   const [hover, setHover] = useState(0);
@@ -31,8 +33,12 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
 };
 
 const InstructorInfo = () => {
+  const { instructorId } = useParams()
+    const { instructors } = useData()
+  
+    const instructor = instructors.find((c) => c.instructorId === Number(instructorId))
+
   const [isWriteFeedbackModalOpen, setIsWriteFeedbackModalOpen] = useState(false);
-  const [instructor, setInstructor] = useState(null);
   const { addFeedback, feedbacks } = useContext(EvaluationContext);
 
   // For displaying the averages on the main page
@@ -51,7 +57,7 @@ const InstructorInfo = () => {
   useEffect(() => {
     import('../../data/instructors.json')
       .then((data) => {
-        const instructorData = data.instructors[0]; // Assuming first instructor is the target
+        const instructorData = data.instructorId; 
         setInstructor(instructorData);
       })
       .catch((err) => console.error('Error loading instructor data:', err));

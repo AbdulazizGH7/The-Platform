@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { CourseEvaluationContext } from './CourseEvaluationContext';
 import Create from '../../assets/Images/Create.svg';
+import { useData } from '../../utilities/DataContext';
+import { useParams } from 'react-router-dom';
 
 const StarRating = ({ count, setRating, isReadOnly = false }) => {
   const [hover, setHover] = useState(0);
@@ -31,6 +33,11 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
 };
 
 const CourseInfo = () => {
+  const { courseId } = useParams()
+    const { courses } = useData()
+  
+    const course = courses.find((c) => c.courseId === Number(courseId))
+
   const [isWriteExperienceModalOpen, setIsWriteExperienceModalOpen] = useState(false);
   const { addExperience, experiences } = useContext(CourseEvaluationContext);
 
@@ -111,7 +118,7 @@ const CourseInfo = () => {
         data-layername="swe206"
         className="overflow-hidden sm:overflow-visible px-16 py-3 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]"
       >
-        SWE 206
+        {course.courseName} {course.courseCode}
       </h2>
       <div className="flex flex-wrap sm:flex-nowrap flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]">
         <h3 className="self-center text-xl sm:text-2xl font-bold text-center text-white">
