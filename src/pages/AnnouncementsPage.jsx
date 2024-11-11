@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PlusCircle as PlusCircleIcon, X as XIcon, Pencil as PencilIcon, Trash as TrashIcon } from "lucide-react";
 
 const AnnouncementCard = ({ instructor, date, message, onEdit, onDelete, isInstructor }) => (
   <div className="bg-gradient-to-br from-purple-800 to-indigo-700 p-6 rounded-lg shadow-md mb-6 relative">
@@ -10,14 +9,18 @@ const AnnouncementCard = ({ instructor, date, message, onEdit, onDelete, isInstr
           className="text-white hover:text-gray-300 transition-colors"
           title="Edit announcement"
         >
-          <PencilIcon size={18} />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+          </svg>
         </button>
         <button 
           onClick={onDelete}
           className="text-white hover:text-red-300 transition-colors"
           title="Delete announcement"
         >
-          <TrashIcon size={18} />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+          </svg>
         </button>
       </div>
     )}
@@ -43,10 +46,10 @@ const AnnouncementForm = ({ onSubmit, onClose, initialData = null }) => {
     const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes()} ${now.getHours() >= 12 ? 'pm' : 'am'}`;
     
     onSubmit({
-      instructor: "Dr. Ahmed Mohsen", // This would normally come from user context
+      instructor: "Dr. Ahmed Mohsen",
       date: initialData ? initialData.date : formattedDate,
       message: message.trim(),
-      id: initialData ? initialData.id : Date.now() // Use existing ID if editing
+      id: initialData ? initialData.id : Date.now()
     });
     setMessage('');
     onClose();
@@ -59,7 +62,9 @@ const AnnouncementForm = ({ onSubmit, onClose, initialData = null }) => {
           {initialData ? 'Edit Announcement' : 'New Announcement'}
         </h3>
         <button onClick={onClose} className="text-white hover:text-gray-300">
-          <XIcon size={20} />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
       <form onSubmit={handleSubmit}>
@@ -113,18 +118,15 @@ const AnnouncementsPage = () => {
     },
   ]);
 
-  // Assuming we have a way to determine if the user is an instructor
-  const isInstructor = true; // This would normally come from authentication/user context
+  const isInstructor = true; // Set this to false if the user is a student
 
   const handleNewAnnouncement = (announcement) => {
     if (editingAnnouncement) {
-      // If editing, update the existing announcement
       setLocalAnnouncements(localAnnouncements.map(ann => 
         ann.id === editingAnnouncement.id ? { ...announcement, id: ann.id } : ann
       ));
       setEditingAnnouncement(null);
     } else {
-      // If new announcement, add to the beginning of the list
       setLocalAnnouncements([announcement, ...localAnnouncements]);
     }
   };
@@ -147,26 +149,25 @@ const AnnouncementsPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center text-white py-12">
-      {/* Header */}
       <header className="w-full max-w-3xl mb-8 text-center">
         <h1 className="text-4xl font-bold text-white mb-2">Coe202 - Sec 7</h1>
         <hr className="border-t-2 border-white w-auto mx-auto mb-8" />
       </header>
 
-      {/* Add Announcement Button for Instructors */}
       {isInstructor && !showForm && (
         <div className="w-full max-w-3xl mb-4">
           <button
             onClick={() => setShowForm(true)}
             className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition duration-200"
           >
-            <PlusCircleIcon size={20} />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
             Add Announcement
           </button>
         </div>
       )}
 
-      {/* Announcements Container */}
       <div className="w-full max-w-3xl flex-grow bg-gradient-to-b from-purple-900 to-indigo-900 p-6 rounded-xl shadow-lg overflow-y-auto">
         {showForm && (
           <AnnouncementForm
