@@ -11,18 +11,22 @@
             "senderId": 3,
             "message": "Welcome to the course group!",
             "timestamp": "2024-11-09T10:00:00Z"
+          },{
+            "senderId": 3,
+            "message": "no class tomorrow",
+            "timestamp": "2024-11-09T12:00:00Z"
           }
         ]
       },{
         "groupId": 202,
         "courseId": 101,
-        "groupName": "dwadadroup1",
+        "groupName": "dwadgroup11",
         "members": [],
         "instructor": 3,
         "messages": [
           {
             "senderId": 3,
-            "message": "Welcome to the course group!",
+            "message": "dwadgroup1 test",
             "timestamp": "2024-11-09T10:00:00Z"
           }
         ]
