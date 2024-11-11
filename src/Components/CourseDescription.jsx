@@ -20,7 +20,7 @@ function CourseDescription() {
     </p>
     {course.prerequisites.length > 0 ? (
                     <ul className="list-disc ml-6">
-                      <h4>prerequisites:</h4>
+                      <h4>Prerequisites: </h4>
                         {course.prerequisites.map((prereqId) => {
                             const prereqCourse = courses.find((c) => c.courseId === prereqId);
                             
