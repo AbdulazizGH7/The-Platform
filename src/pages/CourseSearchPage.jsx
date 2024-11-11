@@ -44,9 +44,7 @@ function CourseSearchPage() {
     }
 
     function handleAddCourse(courseID){
-        console.log(user)
         setUser({...user, courses: [...user.courses, courseID]})
-        console.log(user)
     }
 
     function openRemoveModal(course) {
@@ -212,6 +210,7 @@ function CourseSearchPage() {
             {isAdmin && <div className='flex justify-center my-4'>
                 <Button px='16' title='Add Course' textSize='xl' behavior={openAddCourseForm}></Button>
             </div>}
+
 
             {showAddCourseForm && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

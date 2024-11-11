@@ -8,7 +8,7 @@ function Navbar() {
   return (
     <>
     <nav className='flex justify-between items-center mb-4 mt-2.5'>
-        <h1 className='text-gray-100 font-semibold text-lg lg:text-xl  '>The Platform</h1>
+        <Link to={"/home"}><h1 className='text-gray-100 font-semibold text-lg lg:text-xl'>The Platform</h1></Link>
         <ul className='flex gap-5'>
             <li className='text-gray-100 font-light text-lg lg:text-xl hidden sm:list-item '><Link to={"/home"}>Home</Link></li>
             <li className='text-gray-100 font-light text-lg lg:text-xl hidden sm:list-item'>{location.pathname === "/home" ? (

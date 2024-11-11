@@ -1,37 +1,29 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const EvaluationContext = createContext();
 
 const EvaluationProvider = ({ children }) => {
-  const [experiences, setFeedbacks] = useState([
-    {
-      difficulty: 3,
-      workload: 4,
-      resources: 5,
-      content:
-        "It was a moderately challenging course, covering key topics like software processes, requirements analysis, and design models.",
-    },
-    {
-      difficulty: 2,
-      workload: 5,
-      resources: 4,
-      content:
-        "While the concepts could be difficult, especially for beginners, they were manageable with consistent effort.",
-    },
-  ]);
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  useEffect(() => {
+    // Fetch instructor reviews dynamically from instructors.json
+    import('../../data/instructors.json')
+      .then((data) => {
+        const instructorData = data.instructors[0]; // Assuming first instructor is the target
+        setFeedbacks(instructorData.reviews || []);
+      })
+      .catch((err) => console.error('Error loading feedbacks:', err));
+  }, []);
 
   const addFeedback = (newFeedback) => {
     setFeedbacks((prev) => [...prev, newFeedback]);
   };
 
   return (
-    <EvaluationContext.Provider value={{ experiences, addFeedback }}>
+    <EvaluationContext.Provider value={{ feedbacks, addFeedback }}>
       {children}
     </EvaluationContext.Provider>
   );
 };
 
 export default EvaluationProvider;
-
-
-
