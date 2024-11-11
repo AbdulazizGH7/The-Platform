@@ -67,11 +67,14 @@ const CourseInfo = () => {
     }
 
     const newExperience = {
-      difficulty,
-      workload,
-      resources,
-      content: reviewContent,
+      metrics: {
+        difficulty,
+        workload,
+        resources,
+      },
+      description: reviewContent,
     };
+
     addExperience(newExperience);
     setIsWriteExperienceModalOpen(false);
   };
@@ -79,9 +82,18 @@ const CourseInfo = () => {
   // Calculate averages when the experiences list changes
   useEffect(() => {
     if (experiences.length > 0) {
-      const totalDifficulty = experiences.reduce((sum, exp) => sum + exp.difficulty, 0);
-      const totalWorkload = experiences.reduce((sum, exp) => sum + exp.workload, 0);
-      const totalResources = experiences.reduce((sum, exp) => sum + exp.resources, 0);
+      const totalDifficulty = experiences.reduce(
+        (sum, exp) => sum + (exp.metrics.difficulty || 0),
+        0
+      );
+      const totalWorkload = experiences.reduce(
+        (sum, exp) => sum + (exp.metrics.workload || 0),
+        0
+      );
+      const totalResources = experiences.reduce(
+        (sum, exp) => sum + (exp.metrics.resources || 0),
+        0
+      );
 
       setAvgDifficulty(Math.round(totalDifficulty / experiences.length));
       setAvgWorkload(Math.round(totalWorkload / experiences.length));
@@ -94,102 +106,86 @@ const CourseInfo = () => {
   }, [experiences]);
 
   return (
-    <div className="flex flex-col w-full w-full md:w-[23%] max-md:ml-0 max-md:w-full">
-      <h2 data-layername="swe206" className="overflow-hidden sm:overflow-visible px-16 py-3 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] px-5">
+    <div className="flex flex-col items-center gap-6 p-6 rounded-xl w-full md:w-1/3 shadow-lg max-md:ml-0 max-md:w-full">
+      <h2
+        data-layername="swe206"
+        className="overflow-hidden sm:overflow-visible px-16 py-3 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]"
+      >
         SWE 206
       </h2>
-      <div className="flex flex-wrap sm:flex-nowrap overflow-hidden sm:overflow-visible flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] px-5 max-md:mt-10">
-        <h3 data-layername="difficulty" className="self-center text-xl sm:text-2xl font-bold text-center text-white">
+      <div className="flex flex-wrap sm:flex-nowrap flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]">
+        <h3 className="self-center text-xl sm:text-2xl font-bold text-center text-white">
           Difficulty
         </h3>
         <StarRating count={avgDifficulty} isReadOnly={true} />
-        <h3 data-layername="workload" className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
+        <h3 className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
           Workload
         </h3>
         <StarRating count={avgWorkload} isReadOnly={true} />
-        <h3 data-layername="resources" className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
+        <h3 className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
           Resources
         </h3>
         <StarRating count={avgResources} isReadOnly={true} />
       </div>
       {/* Write Experience Button */}
       <button
-        className="flex flex-wrap sm:flex-nowrap overflow-hidden sm:overflow-visible gap-2 sm:gap-0.5 justify-center px-2 sm:px-4 mt-10 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]"
+        className="flex items-center gap-2 px-4 mt-10 text-xl font-bold text-white rounded-3xl bg-gradient-to-r from-[#171352] to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]"
         onClick={handleOpenModal}
       >
-        <img loading="lazy" src={Create} className="object-contain shrink-0 aspect-[1.06] w-[57px]" alt="" />
-        <span>Write Experiences</span>
+        <img src={Create} alt="Create" className="w-10 h-10" />
+        Write Experiences
       </button>
 
       {/* Modal for Writing Experience */}
       {isWriteExperienceModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-gradient-to-br from-[#2A2159] to-[#3D2F82] p-10 rounded-2xl shadow-lg w-full max-w-[900px] relative border border-purple-500">
-            {/* Modal Header */}
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
+          <div className="bg-gradient-to-r from-[#171352] to-[#6E429D] p-8 rounded-3xl shadow-xl w-[95%] sm:w-[850px] border border-purple-500">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-3xl font-bold text-white">Write Experience</h2>
               <button
                 onClick={() => setIsWriteExperienceModalOpen(false)}
-                className="text-white text-xl border border-purple-400 rounded-full px-2 hover:bg-purple-500"
+                className="text-white text-xl border border-purple-400 rounded-full p-2 hover:bg-purple-500"
               >
                 ✖
               </button>
             </div>
 
-            {/* Error Message */}
             {error && (
-              <p className="text-red-500 text-center font-medium mb-4">
-                {error}
-              </p>
+              <p className="text-red-500 text-center font-medium mb-4">{error}</p>
             )}
 
-            {/* Modal Content */}
             <form onSubmit={handleSubmitExperience}>
-              <div className="flex gap-8">
-                {/* Left Section: Ratings */}
-                <div className="flex flex-col space-y-8 w-1/2">
-                  <div className="p-6 rounded-lg bg-[#2C2149] border border-[#433568] shadow-inner">
-                    <h3 className="text-lg font-semibold text-white mb-2">Difficulty</h3>
-                    <StarRating count={difficulty} setRating={setDifficulty} />
-                  </div>
-                  <div className="p-6 rounded-lg bg-[#2C2149] border border-[#433568] shadow-inner">
-                    <h3 className="text-lg font-semibold text-white mb-2">Workload</h3>
-                    <StarRating count={workload} setRating={setWorkload} />
-                  </div>
-                  <div className="p-6 rounded-lg bg-[#2C2149] border border-[#433568] shadow-inner">
-                    <h3 className="text-lg font-semibold text-white mb-2">Resources</h3>
-                    <StarRating count={resources} setRating={setResources} />
-                  </div>
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="w-full lg:w-1/2">
+                  <h3 className="text-lg font-semibold text-white mb-2">Difficulty</h3>
+                  <StarRating count={difficulty} setRating={setDifficulty} />
+                  <h3 className="text-lg font-semibold text-white mt-6 mb-2">Workload</h3>
+                  <StarRating count={workload} setRating={setWorkload} />
+                  <h3 className="text-lg font-semibold text-white mt-6 mb-2">Resources</h3>
+                  <StarRating count={resources} setRating={setResources} />
                 </div>
-
-                {/* Right Section: Review */}
-                <div className="w-1/2">
-                  <h3 className="text-lg font-semibold text-white mb-4">Review</h3>
+                <div className="w-full lg:w-1/2">
+                  <h3 className="text-lg font-semibold text-white mb-2">Review</h3>
                   <textarea
-                    id="content"
-                    name="content"
+                    rows="6"
+                    className="w-full p-4 rounded-xl bg-[#1E173C] text-white border border-purple-400 focus:ring-purple-600"
                     value={reviewContent}
                     onChange={(e) => setReviewContent(e.target.value)}
-                    rows="12"
-                    required
-                    className="w-full p-6 rounded-lg border border-purple-400 bg-[#1E173C] text-white text-lg leading-relaxed placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-600 shadow-md"
                     placeholder="Write your review here..."
                   ></textarea>
                 </div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex justify-between mt-8">
+              <div className="flex justify-end gap-4 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsWriteExperienceModalOpen(false)}
-                  className="bg-gradient-to-r from-[#5E4A99] to-[#806EBF] text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 shadow-lg"
+                  className="px-6 py-2 text-white bg-purple-700 rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-[#806EBF] to-[#B399F2] text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 shadow-lg"
+                  className="px-6 py-2 text-white bg-purple-500 rounded-xl"
                 >
                   Submit
                 </button>
@@ -203,26 +199,3 @@ const CourseInfo = () => {
 };
 
 export default CourseInfo;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

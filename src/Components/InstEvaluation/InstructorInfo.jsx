@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { EvaluationContext } from './EvaluationContext';
 import Create from '../../assets/Images/Create.svg';
-import EvaluationImage from '../../assets/Images/Aslam111.png';
 
 const StarRating = ({ count, setRating, isReadOnly = false }) => {
   const [hover, setHover] = useState(0);
@@ -31,180 +30,181 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
   );
 };
 
-const CourseInfo = () => {
+const InstructorInfo = () => {
   const [isWriteFeedbackModalOpen, setIsWriteFeedbackModalOpen] = useState(false);
-  const { addFeedback, experiences } = useContext(EvaluationContext);
+  const [instructor, setInstructor] = useState(null);
+  const { addFeedback, feedbacks } = useContext(EvaluationContext);
 
   // For displaying the averages on the main page
-  const [avgDifficulty, setAvgDifficulty] = useState(0);
-  const [avgWorkload, setAvgWorkload] = useState(0);
-  const [avgResources, setAvgResources] = useState(0);
+  const [avgPersonality, setAvgPersonality] = useState(0);
+  const [avgTeaching, setAvgTeaching] = useState(0);
+  const [avgGrading, setAvgGrading] = useState(0);
 
   // For capturing user inputs in the modal
-  const [difficulty, setDifficulty] = useState(0);
-  const [workload, setWorkload] = useState(0);
-  const [resources, setResources] = useState(0);
+  const [personality, setPersonality] = useState(0);
+  const [teaching, setTeaching] = useState(0);
+  const [grading, setGrading] = useState(0);
   const [reviewContent, setReviewContent] = useState('');
   const [error, setError] = useState('');
 
+  // Fetch instructor information dynamically
+  useEffect(() => {
+    import('../../data/instructors.json')
+      .then((data) => {
+        const instructorData = data.instructors[0]; // Assuming first instructor is the target
+        setInstructor(instructorData);
+      })
+      .catch((err) => console.error('Error loading instructor data:', err));
+  }, []);
+
+  // Calculate averages when the feedback list changes
+  useEffect(() => {
+    if (feedbacks && feedbacks.length > 0) {
+      const totalPersonality = feedbacks.reduce((sum, fb) => sum + (fb.metrics?.Personality || 0), 0);
+      const totalTeaching = feedbacks.reduce((sum, fb) => sum + (fb.metrics?.Teaching || 0), 0);
+      const totalGrading = feedbacks.reduce((sum, fb) => sum + (fb.metrics?.Grading || 0), 0);
+
+      setAvgPersonality(Math.round(totalPersonality / feedbacks.length));
+      setAvgTeaching(Math.round(totalTeaching / feedbacks.length));
+      setAvgGrading(Math.round(totalGrading / feedbacks.length));
+    } else {
+      setAvgPersonality(0);
+      setAvgTeaching(0);
+      setAvgGrading(0);
+    }
+  }, [feedbacks]);
+
   // Open modal and reset state
   const handleOpenModal = () => {
-    setDifficulty(0);
-    setWorkload(0);
-    setResources(0);
+    setPersonality(0);
+    setTeaching(0);
+    setGrading(0);
     setReviewContent('');
     setError('');
     setIsWriteFeedbackModalOpen(true);
   };
 
-  // Submit experience
+  // Submit feedback
   const handleSubmitFeedback = (e) => {
     e.preventDefault();
 
     // Validation: Ensure all ratings are selected
-    if (difficulty === 0 || workload === 0 || resources === 0) {
-      setError('Please select ratings for Difficulty, Workload, and Resources.');
+    if (personality === 0 || teaching === 0 || grading === 0) {
+      setError('Please select ratings for Personality, Teaching, and Grading.');
       return;
     }
 
     const newFeedback = {
-      difficulty,
-      workload,
-      resources,
-      content: reviewContent,
+      metrics: {
+        Personality: personality,
+        Teaching: teaching,
+        Grading: grading,
+      },
+      review: reviewContent,
     };
     addFeedback(newFeedback);
     setIsWriteFeedbackModalOpen(false);
   };
 
-  // Calculate averages when the experiences list changes
-  useEffect(() => {
-    if (experiences.length > 0) {
-      const totalDifficulty = experiences.reduce((sum, exp) => sum + exp.difficulty, 0);
-      const totalWorkload = experiences.reduce((sum, exp) => sum + exp.workload, 0);
-      const totalResources = experiences.reduce((sum, exp) => sum + exp.resources, 0);
+  if (!instructor) {
+    return <p>Loading instructor information...</p>;
+  }
 
-      setAvgDifficulty(Math.round(totalDifficulty / experiences.length));
-      setAvgWorkload(Math.round(totalWorkload / experiences.length));
-      setAvgResources(Math.round(totalResources / experiences.length));
-    } else {
-      setAvgDifficulty(0);
-      setAvgWorkload(0);
-      setAvgResources(0);
-    }
-  }, [experiences]);
-
-  return ( 
-    <div className="flex flex-col w-full w-full md:w-[23%] max-md:ml-0 max-md:w-full">
-      {/* Image */}
+  return (
+    <div className="flex flex-col items-center gap-6 p-6 rounded-xl w-full md:w-1/3 shadow-lg max-md:ml-0 max-md:w-full">
+      {/* Instructor Image and Name */}
       <div className="w-full flex justify-center">
-        <img 
-          src={EvaluationImage} 
-          alt="Dr. Muhammad Aslam" 
+        <img
+          src={new URL(instructor.img, import.meta.url).href}
+          alt={instructor.name}
           style={{
-            width: "150px",
-            height: "150px",
-            borderRadius: "50%",
-            border: "3px solid white",
-            marginBottom: "10px"
-          }} 
+            width: '150px',
+            height: '150px',
+            borderRadius: '50%',
+            border: '3px solid white',
+            marginBottom: '10px',
+          }}
         />
       </div>
-      <h2 data-layername="swe206" className="overflow-hidden sm:overflow-visible px-16 py-3 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] px-5">
-      Dr. Muhammad Aslam
+      <h2 className="text-xl sm:text-2xl font-bold text-center text-white bg-gradient-to-r from-[#171352] to-[#6E429D] py-3 rounded-3xl shadow-sm">
+        {instructor.name}
       </h2>
-      <div className="flex flex-wrap sm:flex-nowrap overflow-hidden sm:overflow-visible flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D] px-5 max-md:mt-10">
-        <h3 data-layername="difficulty" className="self-center text-xl sm:text-2xl font-bold text-center text-white">
-        Personality
+
+      {/* Feedback Averages */}
+      <div className="flex flex-wrap sm:flex-nowrap overflow-hidden sm:overflow-visible flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]">
+        <h3 className="self-center text-xl sm:text-2xl font-bold text-center text-white">
+          Personality
         </h3>
-        <StarRating count={avgDifficulty} isReadOnly={true} />
-        <h3 data-layername="workload" className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
-        Teaching
+        <StarRating count={avgPersonality} isReadOnly={true} />
+        <h3 className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
+          Teaching
         </h3>
-        <StarRating count={avgWorkload} isReadOnly={true} />
-        <h3 data-layername="resources" className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
-        Grading
+        <StarRating count={avgTeaching} isReadOnly={true} />
+        <h3 className="self-center mt-2.5 text-xl sm:text-2xl font-bold text-center text-white">
+          Grading
         </h3>
-        <StarRating count={avgResources} isReadOnly={true} />
+        <StarRating count={avgGrading} isReadOnly={true} />
       </div>
+
       {/* Write Feedback Button */}
       <button
-        className="flex flex-wrap sm:flex-nowrap overflow-hidden sm:overflow-visible gap-2 sm:gap-0.5 justify-center px-2 sm:px-4 mt-10 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]"
+        className="flex items-center gap-2 px-4 mt-10 text-xl font-bold text-white rounded-3xl bg-gradient-to-r from-[#171352] to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]"
         onClick={handleOpenModal}
       >
-        <img loading="lazy" src={Create} className="object-contain shrink-0 aspect-[1.06] w-[57px]" alt="" />
-        <span>Write Evaluation</span>
+        <img src={Create} alt="Create" className="w-10 h-10" />
+        Write Feedback
       </button>
 
       {/* Modal for Writing Feedback */}
       {isWriteFeedbackModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-gradient-to-br from-[#2A2159] to-[#3D2F82] p-10 rounded-2xl shadow-lg w-full max-w-[900px] relative border border-purple-500">
-            {/* Modal Header */}
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
+          <div className="bg-gradient-to-r from-[#171352] to-[#6E429D] p-8 rounded-3xl shadow-xl w-[95%] sm:w-[850px] border border-purple-500">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold text-white">Write Evaluations</h2>
+              <h2 className="text-3xl font-bold text-white">Write Feedback</h2>
               <button
                 onClick={() => setIsWriteFeedbackModalOpen(false)}
-                className="text-white text-xl border border-purple-400 rounded-full px-2 hover:bg-purple-500"
+                className="text-white text-xl border border-purple-400 rounded-full p-2 hover:bg-purple-500"
               >
                 ✖
               </button>
             </div>
 
-            {/* Error Message */}
             {error && (
-              <p className="text-red-500 text-center font-medium mb-4">
-                {error}
-              </p>
+              <p className="text-red-500 text-center font-medium mb-4">{error}</p>
             )}
 
-            {/* Modal Content */}
             <form onSubmit={handleSubmitFeedback}>
-              <div className="flex gap-8">
-                {/* Left Section: Ratings */}
-                <div className="flex flex-col space-y-8 w-1/2">
-                  <div className="p-6 rounded-lg bg-[#2C2149] border border-[#433568] shadow-inner">
-                    <h3 className="text-lg font-semibold text-white mb-2">Personality</h3>
-                    <StarRating count={difficulty} setRating={setDifficulty} />
-                  </div>
-                  <div className="p-6 rounded-lg bg-[#2C2149] border border-[#433568] shadow-inner">
-                    <h3 className="text-lg font-semibold text-white mb-2">Teaching</h3>
-                    <StarRating count={workload} setRating={setWorkload} />
-                  </div>
-                  <div className="p-6 rounded-lg bg-[#2C2149] border border-[#433568] shadow-inner">
-                    <h3 className="text-lg font-semibold text-white mb-2">Grading</h3>
-                    <StarRating count={resources} setRating={setResources} />
-                  </div>
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="w-full lg:w-1/2">
+                  <h3 className="text-lg font-semibold text-white mb-2">Personality</h3>
+                  <StarRating count={personality} setRating={setPersonality} />
+                  <h3 className="text-lg font-semibold text-white mt-6 mb-2">Teaching</h3>
+                  <StarRating count={teaching} setRating={setTeaching} />
+                  <h3 className="text-lg font-semibold text-white mt-6 mb-2">Grading</h3>
+                  <StarRating count={grading} setRating={setGrading} />
                 </div>
-
-                {/* Right Section: Review */}
-                <div className="w-1/2">
-                  <h3 className="text-lg font-semibold text-white mb-4">Overview</h3>
+                <div className="w-full lg:w-1/2">
+                  <h3 className="text-lg font-semibold text-white mb-2">Review</h3>
                   <textarea
-                    id="content"
-                    name="content"
+                    rows="6"
+                    className="w-full p-4 rounded-xl bg-[#1E173C] text-white border border-purple-400 focus:ring-purple-600"
                     value={reviewContent}
                     onChange={(e) => setReviewContent(e.target.value)}
-                    rows="12"
-                    required
-                    className="w-full p-6 rounded-lg border border-purple-400 bg-[#1E173C] text-white text-lg leading-relaxed placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-600 shadow-md"
                     placeholder="Write your review here..."
                   ></textarea>
                 </div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex justify-between mt-8">
+              <div className="flex justify-end gap-4 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsWriteFeedbackModalOpen(false)}
-                  className="bg-gradient-to-r from-[#5E4A99] to-[#806EBF] text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 shadow-lg"
+                  className="px-6 py-2 text-white bg-purple-700 rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-[#806EBF] to-[#B399F2] text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 shadow-lg"
+                  className="px-6 py-2 text-white bg-purple-500 rounded-xl"
                 >
                   Submit
                 </button>
@@ -217,27 +217,6 @@ const CourseInfo = () => {
   );
 };
 
-export default CourseInfo;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default InstructorInfo;
 
 

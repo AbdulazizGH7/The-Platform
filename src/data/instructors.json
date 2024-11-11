@@ -2,8 +2,8 @@
     "instructors": [
       {
         "instructorId": 3,
-        "name": "Dr. Smith",
-        "img": "//",
+        "name": "Dr.Muhammad Aslam",
+        "img": "../../assets/Images/Aslam111.svg",
         "courses": [101, 102],
         "reviews": [
           {
@@ -12,14 +12,14 @@
               "Teaching": 4,
               "Grading": 3
             },
-            "review": "Dr. Smith explains concepts clearly."
+            "review": "Dr. Muhammad Aslam is a knowledgeable and approachable instructor. He explains complex topics clearly and makes classes engaging with real-world examples. His grading is fair and transparent, with helpful feedback provided. Overall, Dr. Aslam is supportive, making sure students understand the material and feel confident in their learning."
           }
         ]
       },
       {
         "instructorId": 6,
-        "name": "Dr. Ali",
-        "img": "//",
+        "name": "Dr. Rashad Othman",
+        "img": "../../assets/Images/rasahd.svg",
         "courses": [],
         "reviews": [
           {

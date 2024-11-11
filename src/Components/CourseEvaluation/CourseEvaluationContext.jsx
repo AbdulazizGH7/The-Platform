@@ -1,24 +1,16 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const CourseEvaluationContext = createContext();
 
 const CourseEvaluationProvider = ({ children }) => {
-  const [experiences, setExperiences] = useState([
-    {
-      difficulty: 3,
-      workload: 4,
-      resources: 5,
-      content:
-        "It was a moderately challenging course, covering key topics like software processes, requirements analysis, and design models.",
-    },
-    {
-      difficulty: 2,
-      workload: 5,
-      resources: 4,
-      content:
-        "While the concepts could be difficult, especially for beginners, they were manageable with consistent effort.",
-    },
-  ]);
+  const [experiences, setExperiences] = useState([]);
+
+  useEffect(() => {
+    // Fetch experiences dynamically from the data folder
+    import('../../data/experiences.json')
+      .then((data) => setExperiences(data.experiences || []))
+      .catch((err) => console.error('Error loading experiences:', err));
+  }, []);
 
   const addExperience = (newExperience) => {
     setExperiences((prev) => [...prev, newExperience]);
@@ -32,6 +24,3 @@ const CourseEvaluationProvider = ({ children }) => {
 };
 
 export default CourseEvaluationProvider;
-
-
-

@@ -10,12 +10,10 @@ export const RatingStars = ({ count }) => {
           key={index}
           src={index < count ? Star : UnFilledStar}
           alt={index < count ? "Filled star" : "Unfilled star"}
-          className="w-5 h-5"
+          className="w-4 h-4 md:w-5 md:h-5"
         />
       ))}
     </div>
   );
 };
-export default RatingStars
-
-
+export default RatingStars;
