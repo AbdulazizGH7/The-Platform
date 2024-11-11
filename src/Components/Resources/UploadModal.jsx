@@ -1,3 +1,4 @@
+// src/Components/Resources/UploadModal.jsx
 import React, { useState, useEffect } from 'react';
 
 function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCategory }) {
@@ -22,25 +23,23 @@ function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCat
       return;
     }
 
-    const fileURL = URL.createObjectURL(selectedFile);
-
+    // Construct the file object to match JSON structure
     const newFile = {
-      fileName: selectedFile.name,
+      name: selectedFile.name, // Use 'name' instead of 'fileName' to match JSON structure
       type: selectedFile.name.split('.').pop().toUpperCase(),
       size: selectedFile.size >= 1024 * 1024
         ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`
         : `${(selectedFile.size / 1024).toFixed(2)} KB`,
       dateUploaded: new Date().toISOString().split('T')[0],
-      url: fileURL,  
+      url: URL.createObjectURL(selectedFile), // Add URL for download if necessary
     };
 
-    addFileToCategory(selectedCategory, newFile);
+    addFileToCategory(selectedCategory, newFile); // Call the function to add the file to JSON structure
     setSelectedFile(null);
     closeModal();
   };
 
   return (
-    // Modal
     <div
       className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-20"
       aria-modal="true"
@@ -48,7 +47,6 @@ function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCat
       aria-labelledby="upload-modal-title"
     >
       <div className="bg-gradient-to-br from-[#171352] to-[#7A4FBF] rounded-lg shadow-lg w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3 p-6">
-        {/* Modal Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 id="upload-modal-title" className="text-2xl font-semibold text-white">
             Upload New File
@@ -62,10 +60,8 @@ function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCat
           </button>
         </div>
 
-        {/* Modal Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-          {/* Form-Category Selection */}
             <label htmlFor="category" className="block text-white font-medium mb-2">
               Select Category
             </label>
@@ -83,7 +79,7 @@ function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCat
               ))}
             </select>
           </div>
-          {/* Form-File Selection */}
+
           <div>
             <label htmlFor="file" className="block text-white font-medium mb-2">
               Select File
@@ -97,7 +93,6 @@ function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCat
             />
           </div>
 
-          {/* Cancel and Upload Buttons */}
           <div className="flex justify-end space-x-4">
             <button
               type="button"

@@ -3,21 +3,31 @@ import DropDown from '../Components/DropDown';
 import Button from '../Components/Button';
 import { Link } from 'react-router-dom';
 import { useData } from '../utilities/DataContext';
+import { MultiSelect } from "react-multi-select-component";
 
 function CourseSearchPage() {
 
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [selectedCourse, setSelectedCourse] = useState('');
-    const [courses, setCourses] = useState([]);
+    const [depCourses, setDepCourses] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showAddCourseForm, setShowAddCourseForm] = useState(false);
     const [courseToRemove, setCourseToRemove] = useState(null);
+    const [newCourse, setNewCourse] = useState({
+        courseCode: '',
+        courseName: '',
+        courseDescription: '',
+        courseInst: []
+    });
+    const [selectedAddDepartment, setSelectedAddDepartment] = useState('');
+    const {departments, setDepartments, user, setUser, instructors, setInstructors, courses, setCourses} = useData()
 
-    const {departments, setDepartments} = useData()
-    const {user, setUser} = useData()
+    const [selectedInstructors, setSelectedInstructors] = useState([])
+    const [options, setOptions] = useState(instructors.map(instructor => ({
+        label: instructor.name,
+        value: instructor.instructorId,
+      })))
 
-    console.log(departments)
-
-  
     const isAdmin = user.role === "admin";
 
     function handleDepartmentChange(e) {
@@ -25,7 +35,7 @@ function CourseSearchPage() {
         setSelectedDepartment(departmentName);
         setSelectedCourse('');
         const department = departments.find(dep => dep.name === departmentName);
-        setCourses(department ? department.courses : []);
+        setDepCourses(department ? department.courses : []);
     }
 
     function handleCourseChange(e) {
@@ -34,7 +44,9 @@ function CourseSearchPage() {
     }
 
     function handleAddCourse(courseID){
+        console.log(user)
         setUser({...user, courses: [...user.courses, courseID]})
+        console.log(user)
     }
 
     function openRemoveModal(course) {
@@ -44,7 +56,7 @@ function CourseSearchPage() {
 
     function handleConfirmRemove() {
         // Remove the course from the state-based course list
-        setCourses(prevCourses => prevCourses.filter(c => c.courseID !== courseToRemove.courseID));
+        setDepCourses(prevCourses => prevCourses.filter(c => c.courseID !== courseToRemove.courseID));
 
         // Remove the course from the original data structure
         setDepartments(prevDepartments => prevDepartments.map(dep => {
@@ -66,9 +78,69 @@ function CourseSearchPage() {
         setCourseToRemove(null);
     }
 
+    function openAddCourseForm() {
+        setShowAddCourseForm(true);
+    }
+
+    function handleAddCourseSubmit() {
+        if(courses.find((c) => c.courseCode.toLowerCase() === newCourse.courseCode.toLowerCase())){
+            alert("There is a course with the same code")}
+        else if(selectedAddDepartment === '')
+            alert("Please select a department")
+        else if (newCourse.courseCode && newCourse.courseName && newCourse.courseDescription) {
+            const id = Date.now()
+            setDepartments(prevDepartments => prevDepartments.map(dep => {
+                if (dep.name === selectedAddDepartment) {
+                    return {
+                        ...dep,
+                        courses: [...dep.courses, { courseID: id, courseCode: newCourse.courseCode, courseName: newCourse.courseName }]
+                    };
+                }
+                return dep;
+            }));
+
+            setCourses(prevCourses => [
+                ...prevCourses,
+                {
+                    courseId: id,
+                    courseCode: newCourse.courseCode,
+                    courseName: newCourse.courseName,
+                    description: newCourse.courseDescription,
+                    prerequisites: [],
+                    instructors: newCourse.courseInst,
+                    experiences: [],
+                    groups: [],
+                    resources: {
+                        oldExams: [],
+                        notes: [],
+                        quizzes: [],
+                        other: []
+                    }
+                }
+            ]);
+
+            const instIDs = selectedInstructors.map(inst => inst.value)
+
+            setInstructors(prevInstructors => prevInstructors.map(inst => {
+                if (instIDs.includes(inst.instructorId)) {
+                    console.log(id)
+                    return {
+                        ...inst,
+                        courses: [...inst.courses, id]
+                    };
+                }
+                return inst;
+            }));
+            
+            setSelectedAddDepartment("")
+            setNewCourse({ courseCode: '', courseName: '', courseDescription: '' });
+            setShowAddCourseForm(false);
+        }
+    }
+
     const filteredCourses = selectedCourse
-        ? courses.filter(course => course.courseID === parseInt(selectedCourse))
-        : courses;
+        ? depCourses.filter(course => course.courseID === parseInt(selectedCourse))
+        : depCourses;
 
     return (
         <section className="mt-8">
@@ -91,7 +163,7 @@ function CourseSearchPage() {
                         </DropDown>
                         <DropDown
                             label={"Course"}
-                            options={courses.map(course => ({
+                            options={depCourses.map(course => ({
                                 label: course.courseCode,
                                 value: course.courseID
                             }))}
@@ -138,8 +210,67 @@ function CourseSearchPage() {
             </div>
 
             {isAdmin && <div className='flex justify-center my-4'>
-                <Button px='16' title='Add Course' textSize='xl'></Button>
+                <Button px='16' title='Add Course' textSize='xl' behavior={openAddCourseForm}></Button>
             </div>}
+
+            {showAddCourseForm && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="card-grade border-solid border-2 border-white p-8 rounded-lg text-center w-10/12 sm:w-1/2 md:w-2/3 lg:w-1/2 max-w-[800px]">
+                        <h3 className="text-xl text-gray-100 mb-4 lg:text-2xl xl:text-3xl">Add New Course</h3>
+                        <select className='mb-4 w-full px-2 py-1 rounded-md max-w-[750px] lg:text-xl' value={selectedAddDepartment} onChange={(e) => setSelectedAddDepartment(e.target.value)} required>
+                            <option value="">-- Select a Department --</option>
+                                {departments.map((department) => (
+                                <option key={department.departmentId} value={null}>
+                                    {department.name}
+                                </option>
+                            ))}
+                        </select>
+                        <input
+                        type="text"
+                        placeholder="Course Code"
+                        value={newCourse.courseCode}
+                        onChange={(e) => setNewCourse({ ...newCourse, courseCode: e.target.value })}
+                        className="mb-4 w-full px-2 py-1 rounded-md max-w-[750px] lg:text-xl"
+                        required
+                        />
+                        <input
+                        type="text"
+                        placeholder="Course Name"
+                        value={newCourse.courseName}
+                        onChange={(e) => setNewCourse({ ...newCourse, courseName: e.target.value })}
+                        className="mb-4 w-full px-2 py-1 rounded-md max-w-[750px] lg:text-xl"
+                        required
+                        />
+                        <textarea
+                        placeholder="Course Description"
+                        value={newCourse.courseDescription}
+                        onChange={(e) => setNewCourse({ ...newCourse, courseDescription: e.target.value })}
+                        className="mb-4 w-full px-2 py-1 rounded-md max-w-[750px] lg:text-xl"
+                        required
+                        />
+                        <div className='mb-4 w-full'>
+                        <MultiSelect
+                        options={options}
+                        value={selectedInstructors}
+                        onChange={setSelectedInstructors}
+                        labelledBy="Assign Instructor/s"
+                        hasSelectAll={false}
+                        overrideStrings={{search: "Search", selectSomeItems: "Assign Instructor/s"}}
+                        />
+                        </div>
+                        <div className="flex justify-center gap-4">
+                            <button
+                            className='text-gray-100 rounded-3xl text-center font-bold bg-[#8D8DDA] hover:btn-hover px-4 py-2 lg:px-12 xl:text-xl'
+                            onClick={() => setShowAddCourseForm(false)}>
+                            Cancel</button>
+                            <button
+                            className='text-gray-100 rounded-3xl text-center font-bold bg-[#8D8DDA] hover:btn-hover px-4 py-2 lg:px-12 xl:text-xl '
+                            onClick={handleAddCourseSubmit}>
+                            Add Course</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -158,4 +289,3 @@ function CourseSearchPage() {
 }
 
 export default CourseSearchPage;
-

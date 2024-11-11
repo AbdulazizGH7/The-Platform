@@ -1,20 +1,21 @@
 import React from 'react'
 import ItemCard from './ItemCard'
-import groupsData from '../data/groups.json';
-import coursesData from '../data/courses.json';
 import { Link } from 'react-router-dom';
+import { useData } from '../utilities/DataContext';
  
 function SectionCard({title, items}) {
+
+  const {courses, groups} = useData()
 
   let filteredData = []
 
   if(title === "Courses"){
-      filteredData = coursesData.courses.filter(course =>
+      filteredData = courses.filter(course =>
       items.includes(course.courseId)
     )
   }
   else{
-      filteredData = groupsData.groups.filter(group =>
+      filteredData = groups.filter(group =>
       items.includes(group.groupId)
     )
   }
@@ -29,7 +30,7 @@ function SectionCard({title, items}) {
             {items.length > 0 ? 
                 filteredData.map((data) => (
                     <li className='first:mt-2 last:mb-4' key={title === "Courses" ? data.courseId : data.groupId}>
-                        <Link to={title === "Courses" ? `/course/${data.courseId}` : `/course/${data.courseId}/groups/${data.groupId}`}><ItemCard text={title === "Courses" ? data.courseCode : data.groupName}></ItemCard></Link>
+                        <Link to={title === "Courses" ? `/course/${data.courseId}` : `/group/${data.groupId}`}><ItemCard text={title === "Courses" ? data.courseCode : data.groupName}></ItemCard></Link>
                     </li>
             )) : title === "Courses" ? <div className='min-h-[200px] flex items-center justify-center'>
             <p className='text-gray-100 text-xl sm:text-2xl md:text-3xl font-semibold px-1'>

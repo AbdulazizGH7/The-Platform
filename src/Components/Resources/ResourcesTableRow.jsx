@@ -1,18 +1,10 @@
+// src/Components/Resources/ResourcesTableRow.jsx
 import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 
 function ResourcesTableRow({ file, index, isAdmin, onDelete }) {
   const downloadFile = () => {
-    if (file.url) {
-      const link = document.createElement('a');
-      link.href = file.url;
-      link.download = file.fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link); // Clean up
-    } else {
-      console.error("File URL is not available.");
-    }
+    console.log("Downloading file:", file.name); // Placeholder logic for file download
   };
 
   return (
@@ -26,9 +18,9 @@ function ResourcesTableRow({ file, index, isAdmin, onDelete }) {
         <button
           onClick={downloadFile}
           className="text-blue-400 hover:underline focus:outline-none focus:ring"
-          aria-label={`Download ${file.fileName}`}
+          aria-label={`Download ${file.name}`}
         >
-          {file.fileName}
+          {file.name}
         </button>
       </td>
       <td className="py-2 px-4 text-sm text-center md:text-base sm:text-xs border-b border-[#0F3460] hidden md:table-cell">
@@ -44,7 +36,7 @@ function ResourcesTableRow({ file, index, isAdmin, onDelete }) {
       {isAdmin && (
         <td className="py-2 px-4 text-sm text-center border-b border-[#0F3460]">
           <button
-            onClick={() => onDelete(file.fileName)}
+            onClick={() => onDelete(file.name)}
             className="text-red-500 hover:text-red-700 focus:outline-none"
             aria-label="Delete file"
           >

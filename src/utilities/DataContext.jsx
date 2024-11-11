@@ -18,14 +18,15 @@ function DataProvider({ children }) {
   const [instructors, setInstructors] = useState(instructorData.instructors);
   const [experiences, setExperiences] = useState(experiencesData.experiences);
 
-  function loadUserData(username) {
-    
-    const foundUser = usersData.users.find(function (u) {
-      return u.username === username;
-    });
-    setUser(foundUser);
-    
+  function loadUserData(email, password) {
+    const foundUser = usersData.users.find((user) => user.email === email && user.password === password);
+    if (foundUser) {
+      setUser(foundUser);
+      return true;
+    }
+    return false;
   }
+  
 
   return (
     <DataContext.Provider value={{ user, setUser, loadUserData, departments, setDepartments, groups, setGroups, courses, setCourses, instructors, setInstructors, experiences, setExperiences }}>

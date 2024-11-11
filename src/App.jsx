@@ -1,3 +1,4 @@
+
 import { Route, Link, Navigate, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
 import MainLayout from './layouts/MainLayout';
 import HomePage from "./pages/HomePage";
@@ -41,4 +42,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
