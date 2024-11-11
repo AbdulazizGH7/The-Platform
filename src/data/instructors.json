@@ -15,6 +15,22 @@
             "review": "Dr. Smith explains concepts clearly."
           }
         ]
+      },
+      {
+        "instructorId": 6,
+        "name": "Dr. Ali",
+        "img": "//",
+        "courses": [],
+        "reviews": [
+          {
+            "metrics": {
+              "Personality": 2,
+              "Teaching": 3,
+              "Grading": 4
+            },
+            "review": "Good"
+          }
+        ]
       }
     ]
   }
