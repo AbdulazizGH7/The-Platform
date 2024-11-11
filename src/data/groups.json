@@ -14,10 +14,36 @@
           }
         ]
       },{
+        "groupId": 202,
+        "courseId": 101,
+        "groupName": "dwadadroup1",
+        "members": [],
+        "instructor": 3,
+        "messages": [
+          {
+            "senderId": 3,
+            "message": "Welcome to the course group!",
+            "timestamp": "2024-11-09T10:00:00Z"
+          }
+        ]
+      },{
         "groupId": 203,
         "courseId": 100,
         "groupName": "ICS-108-Group1",
-        "members": [2],
+        "members": [],
+        "instructor": 3,
+        "messages": [
+          {
+            "senderId": 3,
+            "message": "Welcome to the course group!",
+            "timestamp": "2024-11-09T10:00:00Z"
+          }
+        ]
+      },{
+        "groupId": 205,
+        "courseId": 100,
+        "groupName": "ICS-108-Group2",
+        "members": [],
         "instructor": 3,
         "messages": [
           {

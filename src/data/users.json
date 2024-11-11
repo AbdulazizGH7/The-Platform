@@ -6,8 +6,8 @@
         "password": "admin",
         "username": "admin1",
         "role": "admin",
-        "courses": [],
-        "groups": []
+        "courses": [101],
+        "groups": [201]
       },
       {
         "id": 2,
