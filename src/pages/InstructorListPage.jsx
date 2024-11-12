@@ -40,10 +40,11 @@ const InstructorListPage = () => {
 
   const InstructorCard = ({ instructor }) => {
     const averageRating = calculateAverageRating(instructor.reviews);
-    const imagePath = new URL(instructor.img, import.meta.url).href;
     const handleNavigate = () => {
       navigate(`/instructor/${instructor.instructorId}`);
     };
+    const imagePath = `${import.meta.env.BASE_URL}${instructor.img.replace("../../", "src/")}`;
+
 
     return (
       <button
