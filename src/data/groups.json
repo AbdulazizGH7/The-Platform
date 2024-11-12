@@ -4,7 +4,7 @@
         "groupId": 201,
         "courseId": 101,
         "groupName": "ICS-202-Group1",
-        "members": [2],
+        "members": [2, 1, 3],
         "instructor": 3,
         "messages": [
           {
