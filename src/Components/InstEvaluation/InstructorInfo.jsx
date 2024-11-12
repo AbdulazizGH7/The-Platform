@@ -34,7 +34,10 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
 
 const InstructorInfo = () => {
   const { instructorId } = useParams()
-    const { instructors } = useData()
+  const { instructors, user } = useData();
+  
+   const isAdmin = user.role === 'admin';
+ console.log('User:', user, 'Is Admin:', isAdmin);
   
     const instructor = instructors.find((c) => c.instructorId === Number(instructorId))
 
@@ -60,7 +63,7 @@ const InstructorInfo = () => {
         const instructorData = data.instructorId; 
         setInstructor(instructorData);
       })
-      .catch((err) => console.error('Error loading instructor data:', err));
+        .catch((err) => console.error('Error loading instructor data:', err));
   }, []);
 
   // Calculate averages when the feedback list changes
@@ -153,13 +156,13 @@ const InstructorInfo = () => {
       </div>
 
       {/* Write Feedback Button */}
-      <button
+      {!isAdmin && <button
         className="flex items-center gap-2 px-4 mt-10 text-xl font-bold text-white rounded-3xl bg-gradient-to-r from-[#171352] to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]"
         onClick={handleOpenModal}
       >
         <img src={Create} alt="Create" className="w-10 h-10" />
         Write Feedback
-      </button>
+      </button>}
 
       {/* Modal for Writing Feedback */}
       {isWriteFeedbackModalOpen && (

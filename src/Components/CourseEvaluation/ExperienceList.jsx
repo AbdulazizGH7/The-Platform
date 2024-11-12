@@ -3,9 +3,12 @@ import { CourseEvaluationContext } from './CourseEvaluationContext';
 import ExperienceItem from './ExperienceItems';
 
 const ExperienceList = () => {
-  const { experiences } = useContext(CourseEvaluationContext);
+  const { experiences, setExperiences } = useContext(CourseEvaluationContext);
 
-  // Check if experiences is an array
+  const deleteExperience = (index) => {
+    setExperiences((prev) => prev.filter((_, i) => i !== index));
+  };
+
   if (!Array.isArray(experiences)) {
     return <p className="text-white">Loading experiences...</p>;
   }
@@ -19,7 +22,11 @@ const ExperienceList = () => {
         className="overflow-y-auto max-h-80 md:max-h-96 space-y-4 p-5 bg-gradient-to-r from-[#131044] to-[#6E429D] rounded-lg border-4 border-white"
       >
         {experiences.map((experience, index) => (
-          <ExperienceItem key={index} {...experience} />
+          <ExperienceItem
+            key={index}
+            {...experience}
+            onDelete={() => deleteExperience(index)}
+          />
         ))}
       </div>
     </div>

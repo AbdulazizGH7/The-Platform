@@ -17,7 +17,7 @@ const CourseEvaluationProvider = ({ children }) => {
   };
 
   return (
-    <CourseEvaluationContext.Provider value={{ experiences, addExperience }}>
+    <CourseEvaluationContext.Provider value={{ experiences, addExperience, setExperiences }}>
       {children}
     </CourseEvaluationContext.Provider>
   );
