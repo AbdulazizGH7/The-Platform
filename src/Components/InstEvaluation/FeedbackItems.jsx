@@ -57,7 +57,7 @@ console.log('User:', user, 'Is Admin:', isAdmin);
           >
             <div
               data-layername="content"
-              className="grow px-7 pt-2 pb-20 text-xl text-white rounded-lg border-solid border-2 border-gray-200 shadow-sm max-md:pl-5 max-md:mt-10 max-md:max-w-full break-words overflow-wrap break-word"
+              className="grow px-4 py-2 md:px-7 md:py-4 mt-4 md:mt-10 text-[12px] tracking-tight md:text-xl text-white rounded-lg border-solid border-2 border-gray-200 shadow-sm max-w-full md:max-w-lg break-words overflow-wrap break-word"
             >
               {review}
             </div>
