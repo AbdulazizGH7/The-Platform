@@ -20,7 +20,7 @@ const EvaluationProvider = ({ children }) => {
   };
 
   return (
-    <EvaluationContext.Provider value={{ feedbacks, addFeedback }}>
+    <EvaluationContext.Provider value={{ feedbacks, addFeedback, setFeedbacks }}>
       {children}
     </EvaluationContext.Provider>
   );

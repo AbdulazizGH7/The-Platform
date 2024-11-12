@@ -34,7 +34,9 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
 
 const CourseInfo = () => {
   const { courseId } = useParams()
-    const { courses } = useData()
+    const { courses, user } = useData()
+    const isAdmin = user.role === "admin";
+    console.log(user)
   
     const course = courses.find((c) => c.courseId === Number(courseId))
 
@@ -135,13 +137,13 @@ const CourseInfo = () => {
         <StarRating count={avgResources} isReadOnly={true} />
       </div>
       {/* Write Experience Button */}
-      <button
+      {!isAdmin && <button
         className="flex items-center gap-2 px-4 mt-10 text-xl font-bold text-white rounded-3xl bg-gradient-to-r from-[#171352] to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]"
         onClick={handleOpenModal}
       >
         <img src={Create} alt="Create" className="w-10 h-10" />
         Write Experiences
-      </button>
+      </button>}
 
       {/* Modal for Writing Experience */}
       {isWriteExperienceModalOpen && (

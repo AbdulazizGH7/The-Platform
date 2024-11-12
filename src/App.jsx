@@ -13,6 +13,7 @@ import AnnouncementsPage from "./pages/AnnouncementsPage"
 import SignUpPage from "./pages/SignUpPage";
 import CourseEvaluationPage from "./pages/CourseEvaluationPage";
 import EvaluationPage from "./pages/EvaluationPage";
+import InstructorListPage from "./pages/InstructorListPage";
 
 function App() {
   const router = createBrowserRouter(
@@ -28,7 +29,7 @@ function App() {
           <Route path="/course/:courseId/groups"element={<GroupsPage></GroupsPage>} />
           <Route path="/group/:groupId" element={<AnnouncementsPage></AnnouncementsPage>}/>
           <Route path="/course/:courseId/experiences" element={<CourseEvaluationPage/>}/>
-          <Route path="/course/:courseId/instructors"/>
+          <Route path="/course/:courseId/instructors"element={<InstructorListPage/>}/>
           <Route path="/instructor/:instructorId" element={<EvaluationPage/>}/>
           <Route path="/course/:courseId/resources" element={<ResourcesPage />} />
           <Route path="/course/:courseId/resources/:category" element={<ResourcesList />} />

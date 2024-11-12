@@ -20,7 +20,7 @@
         "instructorId": 6,
         "name": "Dr. Rashad Othman",
         "img": "../../assets/Images/rasahd.svg",
-        "courses": [],
+        "courses": [101],
         "reviews": [
           {
             "metrics": {
