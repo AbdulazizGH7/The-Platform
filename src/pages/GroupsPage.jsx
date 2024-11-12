@@ -96,8 +96,6 @@ const GroupsPage = () => {
         <h2 className="text-white font-bold text-3xl mb-4 lg:text-4xl">Groups</h2>
         <hr className="w-1/2 mx-auto border-purple-500" />
       </header>
-      <button onClick={console.log(user)}>hh</button>
-
       <div className="min-h-screen text-white flex flex-col items-center p-8">
         <div className="w-full max-w-4xl overflow-y-auto h-96 p-6 bg-gradient-to-br from-purple-900 to-purple-700 bg-opacity-70 rounded-lg shadow-lg scrollbar-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

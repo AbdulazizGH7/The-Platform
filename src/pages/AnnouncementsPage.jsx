@@ -101,10 +101,6 @@ const AnnouncementsPage = () => {
   const [localAnnouncements, setLocalAnnouncements] = useState([]);
 
   useEffect(() => {
-    console.log("Group ID from params:", groupId);
-    console.log("Groups data:", groups);
-    console.log("Instructors data:", instructors);
-
     if (!groups.length || !instructors.length || !groupId) return;
 
     const group = groups.find(group => group.groupId === parseInt(groupId));
