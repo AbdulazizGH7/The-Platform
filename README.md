@@ -18,5 +18,11 @@ To set up the project on your local machine, follow these steps:
 4. Start the development server:
    ```bash
    npm run dev
+4. Login In:
+   | Email | Password |
+   | -------- | ------- |
+   | student@kfupm.com | student |
+   | instructor@kfupm.com | instructor |
+   | admin@kfupm.com | admin |
 
 **Note: Currently, the platform lacks backend support, so any page refresh may cause the site to break. Additionally, some functionalities might not work as expected for the same reason mentioned.**
