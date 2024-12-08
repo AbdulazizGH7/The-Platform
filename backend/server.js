@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const Department = require('./models/Department')
 const departments = require('./routes/departments')
 const Course = require('./models/Course')
-const cors = require('cors')
 const PORT = process.env.PORT || 5000
 
 const app = express()
