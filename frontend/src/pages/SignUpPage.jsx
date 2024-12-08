@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Computer from "../assets/Images/Computer.svg";
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../utilities/DataContext';
-
+import axios from 'axios'
 function SignUpPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -26,13 +26,8 @@ function SignUpPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-
-  const isUsernameTaken = (username) =>
-    users.some((user) => user.username === username);
-  const isEmailTaken = (email) =>
-    users.some((user) => user.email === email);
-
-  const handleSignUp = () => {
+  
+  const handleSignUp = async () => {
     // Reset error states and messages
     setUsernameError(false);
     setUsernameErrorMessage('');
@@ -45,43 +40,79 @@ function SignUpPage() {
 
     let hasError = false;
 
-    // Username validation
+    // Client-side validation
     if (!username) {
       setUsernameError(true);
       setUsernameErrorMessage('Username cannot be empty');
-      hasError = true;
-    } else if (isUsernameTaken(username)) {
+    }
+  
+    if (!email) {
+      setEmailError(true);
+      setEmailErrorMessage('Email cannot be empty');
+    } else if (!validateEmailFormat(email)) {
+      setEmailError(true);
+      setEmailErrorMessage('Invalid email format');
+    }
+  
+    if (!password) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Password cannot be empty');
+    }
+  
+    if (!termsAgreed) {
+      setTermsError(true);
+      setTermsErrorMessage('You must agree on the Terms of Service');
+    }
+  
+    if (hasError) {
+      return;
+    }
+
+    // Handle server-side validation errors if no errors have been found
+    try {
+      const response = await axios.post('http://localhost:8080/signup/', {
+        username,
+        email,
+        password,
+      });
+    
+      if (response.status === 201) {
+        navigate('/home');
+      }
+    } catch (error) {
+      console.error('Error object:', error);
+    
+      // Fallback in case `error.response` is undefined
+      if (error.response) {
+        const { usernameTaken, emailTaken } = error.response.data;
+    
+        if (usernameTaken) {
+          setUsernameError(true);
+          setUsernameErrorMessage('Username is already taken');
+        }
+        if (emailTaken) {
+          setEmailError(true);
+          setEmailErrorMessage('Email is already used');
+        }
+      } else {
+        setUsernameError(true);
+        setUsernameErrorMessage('Something went wrong. Please try again later.');
+      }
+    }
+    
+  
+    // Server-side validation
+
+    if (isUsernameTaken(username)) {
       setUsernameError(true);
       setUsernameErrorMessage('Username is already taken');
       hasError = true;
     }
 
     // Email validation
-    if (!email) {
-      setEmailError(true);
-      setEmailErrorMessage('Email cannot be empty');
-      hasError = true;
-    } else if (!validateEmailFormat(email)) {
-      setEmailError(true);
-      setEmailErrorMessage('Invalid email format');
-      hasError = true;
-    } else if (isEmailTaken(email)) {
+    if (isEmailTaken(email)) {
       setEmailError(true);
       setEmailErrorMessage('Email is already used');
-      hasError = true;
-    }
-
-    // Password validation
-    if (!password) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password cannot be empty');
-      hasError = true;
-    }
-
-    // Terms of Service validation
-    if (!termsAgreed) {
-      setTermsError(true);
-      setTermsErrorMessage('You must agree on the Terms of Service');
       hasError = true;
     }
 
