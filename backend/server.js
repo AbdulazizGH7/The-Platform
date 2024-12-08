@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const Department = require('./models/Department')
 const departments = require('./routes/departments')
+const instructors = require('./routes/instructors')
 const cors = require('cors')
 const Course = require('./models/Course')
 const PORT = process.env.PORT || 5000
@@ -25,6 +25,7 @@ mongoose.connect(process.env.DB_URL)
 
 // Routes
 app.use('/api/departments', departments)
+app.use('/api/instructors', instructors)
 
 
 
