@@ -22,7 +22,8 @@ function CourseSearchPage() {
     });
     const [selectedAddDepartment, setSelectedAddDepartment] = useState('');
     const [departments, setDepartments] = useState([])
-    const { user, setUser, instructors, setInstructors, courses, setCourses} = useData()
+    const [courses, setCourses] = useState([])
+    const { user, setUser, instructors, setInstructors} = useData()
     const [selectedInstructors, setSelectedInstructors] = useState([])
     const [options, setOptions] = useState(instructors.map(instructor => ({
         label: instructor.name,
@@ -37,7 +38,16 @@ function CourseSearchPage() {
         })  
         .catch(error => {  
             console.error('Error fetching data:', error);  
-        });  
+        });
+        
+        {isAdmin && axios.get('http://localhost:8080/api/courses')
+            .then(response =>{
+                setCourses(response.data)
+            })
+            .catch(error =>{
+                console.error('Error fetching data:', error); 
+            })}
+
     }, []);
 
     // This function handles the selection of the department
@@ -104,7 +114,6 @@ function CourseSearchPage() {
         else if(selectedAddDepartment === '')
             alert("Please select a department")
         else if (newCourse.courseCode && newCourse.courseName && newCourse.courseDescription) {
-            const id = Date.now()
             setDepartments(prevDepartments => prevDepartments.map(dep => {
                 if (dep.departmentName === selectedAddDepartment) {
                     return {
