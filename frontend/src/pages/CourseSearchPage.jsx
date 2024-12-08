@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DropDown from '../Components/DropDown';
 import Button from '../Components/Button';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { useData } from '../utilities/DataContext';
 import { MultiSelect } from "react-multi-select-component";
 
@@ -20,7 +21,19 @@ function CourseSearchPage() {
         courseInst: []
     });
     const [selectedAddDepartment, setSelectedAddDepartment] = useState('');
-    const {departments, setDepartments, user, setUser, instructors, setInstructors, courses, setCourses} = useData()
+    const [departments, setDepartments] = useState([])
+
+    useEffect(() => {    
+        axios.get('http://localhost:8080/api/departments')  
+            .then(response => {  
+                setDepartments(response.data);  
+        })  
+        .catch(error => {  
+            console.error('Error fetching data:', error);  
+        });  
+    }, []);
+
+    const { user, setUser, instructors, setInstructors, courses, setCourses} = useData()
 
     const [selectedInstructors, setSelectedInstructors] = useState([])
     const [options, setOptions] = useState(instructors.map(instructor => ({
@@ -34,7 +47,7 @@ function CourseSearchPage() {
         const departmentName = e.target.value;
         setSelectedDepartment(departmentName);
         setSelectedCourse('');
-        const department = departments.find(dep => dep.name === departmentName);
+        const department = departments.find(dep => dep.departmentName === departmentName);
         setDepCourses(department ? department.courses : []);
     }
 
@@ -58,7 +71,7 @@ function CourseSearchPage() {
 
         // Remove the course from the original data structure
         setDepartments(prevDepartments => prevDepartments.map(dep => {
-            if (dep.name === selectedDepartment) {
+            if (dep.departmentName === selectedDepartment) {
                 return {
                     ...dep,
                     courses: dep.courses.filter(c => c.courseID !== courseToRemove.courseID)
@@ -88,7 +101,7 @@ function CourseSearchPage() {
         else if (newCourse.courseCode && newCourse.courseName && newCourse.courseDescription) {
             const id = Date.now()
             setDepartments(prevDepartments => prevDepartments.map(dep => {
-                if (dep.name === selectedAddDepartment) {
+                if (dep.departmentName === selectedAddDepartment) {
                     return {
                         ...dep,
                         courses: [...dep.courses, { courseID: id, courseCode: newCourse.courseCode, courseName: newCourse.courseName }]
@@ -137,7 +150,7 @@ function CourseSearchPage() {
     }
 
     const filteredCourses = selectedCourse
-        ? depCourses.filter(course => course.courseID === parseInt(selectedCourse))
+        ? depCourses.filter(course => course._id === selectedCourse)
         : depCourses;
 
     return (
@@ -152,8 +165,8 @@ function CourseSearchPage() {
                         <DropDown
                             label={"Department"}
                             options={departments.map(department => ({
-                                label: department.name,
-                                value: department.name
+                                label: department.departmentName,
+                                value: department.departmentName
                             }))}
                             selectedValue={selectedDepartment}
                             onChange={handleDepartmentChange}
@@ -163,7 +176,7 @@ function CourseSearchPage() {
                             label={"Course"}
                             options={depCourses.map(course => ({
                                 label: course.courseCode,
-                                value: course.courseID
+                                value: course._id
                             }))}
                             selectedValue={selectedCourse}
                             onChange={handleCourseChange}
@@ -185,14 +198,14 @@ function CourseSearchPage() {
                                     </thead>
                                     <tbody>
                                         {filteredCourses.map((course) => (
-                                            <tr key={course.courseID} className="border-b odd:bg-[#26264F] even:bg-[#1D1E42]">
+                                            <tr key={course._id} className="border-b odd:bg-[#26264F] even:bg-[#1D1E42]">
                                                 <td className="px-4 py-2 whitespace-nowrap lg:text-lg">{course.courseCode}</td>
                                                 <td className="px-4 py-2 whitespace-nowrap w-full lg:text-lg">{course.courseName}</td>
                                                 <td className="px-4 py-2 whitespace-nowrap">
-                                                    <Link to={`/course/${course.courseID}`}><Button title='Info' px='8'></Button></Link>
+                                                    <Link to={`/course/${course._id}`}><Button title='Info' px='8'></Button></Link>
                                                 </td>
                                                 <td className="px-4 py-2 whitespace-nowrap">
-                                                    <Button title={user.courses.includes(course.courseID) ? "Added" : "Add"} px='8' isDisabled={user.courses.includes(course.courseID)} behavior={() => handleAddCourse(course.courseID)}></Button>
+                                                    <Button title={user.courses.includes(course._id) ? "Added" : "Add"} px='8' isDisabled={user.courses.includes(course._id)} behavior={() => handleAddCourse(course._id)}></Button>
                                                 </td>
                                                 <td className={`px-4 py-2 whitespace-nowrap ${isAdmin ? "block" : "hidden"}`}>
                                                     <Button title='Remove' px='8' behavior={() => openRemoveModal(course)}></Button>
@@ -220,7 +233,7 @@ function CourseSearchPage() {
                             <option value="">-- Select a Department --</option>
                                 {departments.map((department) => (
                                 <option key={department.departmentId} value={null}>
-                                    {department.name}
+                                    {department.departmentName}
                                 </option>
                             ))}
                         </select>
