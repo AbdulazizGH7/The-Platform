@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import DropDown from '../Components/DropDown';
-import Button from '../Components/Button';
 import { Link } from 'react-router-dom';
+import { MultiSelect } from "react-multi-select-component";
 import axios from 'axios';
 import { useData } from '../utilities/DataContext';
-import { MultiSelect } from "react-multi-select-component";
+import DropDown from '../Components/DropDown';
+import Button from '../Components/Button';
 
 function CourseSearchPage() {
 
@@ -22,6 +22,13 @@ function CourseSearchPage() {
     });
     const [selectedAddDepartment, setSelectedAddDepartment] = useState('');
     const [departments, setDepartments] = useState([])
+    const { user, setUser, instructors, setInstructors, courses, setCourses} = useData()
+    const [selectedInstructors, setSelectedInstructors] = useState([])
+    const [options, setOptions] = useState(instructors.map(instructor => ({
+        label: instructor.name,
+        value: instructor.instructorId,
+      })))
+    const isAdmin = user.role === "admin";
 
     useEffect(() => {    
         axios.get('http://localhost:8080/api/departments')  
@@ -33,16 +40,7 @@ function CourseSearchPage() {
         });  
     }, []);
 
-    const { user, setUser, instructors, setInstructors, courses, setCourses} = useData()
-
-    const [selectedInstructors, setSelectedInstructors] = useState([])
-    const [options, setOptions] = useState(instructors.map(instructor => ({
-        label: instructor.name,
-        value: instructor.instructorId,
-      })))
-
-    const isAdmin = user.role === "admin";
-
+    // This function handles the selection of the department
     function handleDepartmentChange(e) {
         const departmentName = e.target.value;
         setSelectedDepartment(departmentName);
@@ -51,23 +49,27 @@ function CourseSearchPage() {
         setDepCourses(department ? department.courses : []);
     }
 
+    // This function handles the selection of the Course
     function handleCourseChange(e) {
         const courseCode = e.target.value;
         setSelectedCourse(courseCode);
     }
 
+    // Needs work...
     function handleAddCourse(courseID){
         setUser({...user, courses: [...user.courses, courseID]})
     }
 
+    // Needs work...
     function openRemoveModal(course) {
         setCourseToRemove(course);
         setShowModal(true);
     }
 
+    // Needs work...
     function handleConfirmRemove() {
         // Remove the course from the state-based course list
-        setDepCourses(prevCourses => prevCourses.filter(c => c.courseID !== courseToRemove.courseID));
+        setDepCourses(prevCourses => prevCourses.filter(c => c._id !== courseToRemove._id));
 
         // Remove the course from the original data structure
         setDepartments(prevDepartments => prevDepartments.map(dep => {
@@ -84,15 +86,18 @@ function CourseSearchPage() {
         setCourseToRemove(null);
     }
 
+    // Needs work...
     function handleCancelRemove() {
         setShowModal(false);
         setCourseToRemove(null);
     }
 
+    // Needs work...
     function openAddCourseForm() {
         setShowAddCourseForm(true);
     }
 
+    // Needs work...
     function handleAddCourseSubmit() {
         if(courses.find((c) => c.courseCode.toLowerCase() === newCourse.courseCode.toLowerCase())){
             alert("There is a course with the same code")}
@@ -183,7 +188,7 @@ function CourseSearchPage() {
                             disabled={!selectedDepartment}>
                         </DropDown>
                     </div>
-                    <div className={`border-solid border-2 border-white mt-4 flex flex-col ${filteredCourses.length === 0 || !selectedDepartment ? 'justify-center flex-grow mb-5' : 'h-auto'}`} id='C'>
+                    <div className={`border-solid border-2 border-white mt-4 flex flex-col ${filteredCourses.length === 0 || !selectedDepartment ? 'justify-center flex-grow mb-5' : 'h-auto'}`} >
                         {!selectedDepartment ? <p className='text-center text-gray-100 font-bold text-3xl sm:text-4xl'>Please Select a Department</p> : filteredCourses.length > 0 ? (
                             <div className="overflow-auto max-h-[800px]">
                                 <table className="w-full table-auto text-gray-100">
@@ -202,13 +207,27 @@ function CourseSearchPage() {
                                                 <td className="px-4 py-2 whitespace-nowrap lg:text-lg">{course.courseCode}</td>
                                                 <td className="px-4 py-2 whitespace-nowrap w-full lg:text-lg">{course.courseName}</td>
                                                 <td className="px-4 py-2 whitespace-nowrap">
-                                                    <Link to={`/course/${course._id}`}><Button title='Info' px='8'></Button></Link>
+                                                    <Link to={`/course/${course._id}`}>
+                                                        <Button 
+                                                            title='Info'
+                                                            px='8'>
+                                                        </Button>
+                                                    </Link>
                                                 </td>
                                                 <td className="px-4 py-2 whitespace-nowrap">
-                                                    <Button title={user.courses.includes(course._id) ? "Added" : "Add"} px='8' isDisabled={user.courses.includes(course._id)} behavior={() => handleAddCourse(course._id)}></Button>
+                                                    <Button 
+                                                        title={user.courses.includes(course._id) ? "Added" : "Add"} 
+                                                        px='8' 
+                                                        isDisabled={user.courses.includes(course._id)} 
+                                                        behavior={() => handleAddCourse(course._id)}>
+                                                    </Button>
                                                 </td>
                                                 <td className={`px-4 py-2 whitespace-nowrap ${isAdmin ? "block" : "hidden"}`}>
-                                                    <Button title='Remove' px='8' behavior={() => openRemoveModal(course)}></Button>
+                                                    <Button 
+                                                        title='Remove' 
+                                                        px='8' 
+                                                        behavior={() => openRemoveModal(course)}
+                                                    ></Button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -221,7 +240,12 @@ function CourseSearchPage() {
             </div>
 
             {isAdmin && <div className='flex justify-center my-4'>
-                <Button px='16' title='Add Course' textSize='xl' behavior={openAddCourseForm}></Button>
+                <Button 
+                    px='16' 
+                    title='Add Course' 
+                    textSize='xl' 
+                    behavior={openAddCourseForm}>
+                </Button>
             </div>}
 
 
@@ -229,8 +253,14 @@ function CourseSearchPage() {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="card-grade border-solid border-2 border-white p-8 rounded-lg text-center w-10/12 sm:w-1/2 md:w-2/3 lg:w-1/2 max-w-[800px]">
                         <h3 className="text-xl text-gray-100 mb-4 lg:text-2xl xl:text-3xl">Add New Course</h3>
-                        <select className='mb-4 w-full px-2 py-1 rounded-md max-w-[750px] lg:text-xl' value={selectedAddDepartment} onChange={(e) => setSelectedAddDepartment(e.target.value)} required>
-                            <option value="">-- Select a Department --</option>
+                        <select className='mb-4 w-full px-2 py-1 rounded-md max-w-[750px] lg:text-xl' 
+                        value={selectedAddDepartment} 
+                        onChange={(e) => setSelectedAddDepartment(e.target.value)} 
+                        required>
+                            <option 
+                                value="">
+                                -- Select a Department --
+                            </option>
                                 {departments.map((department) => (
                                 <option key={department.departmentId} value={null}>
                                     {department.departmentName}
