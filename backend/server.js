@@ -8,6 +8,7 @@ const resources = require('./routes/resources')
 const authRoutes = require('./routes/auth'); // Import the auth router
 const uploadRoutes = require('./routes/uploads');
 const users = require('./routes/users');
+const groups = require('./routes/groups')
 
 require('dotenv').config();  // for environment variables
 
@@ -37,3 +38,5 @@ app.use("/api/courses", courses)
 app.use('/api/users', users);
 app.use('/api/resources', resources);
 app.use('/upload', uploadRoutes);
+
+app.use("/api/groups", groups)

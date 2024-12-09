@@ -64,7 +64,12 @@ function CourseSearchPage() {
 
     // Needs work...
     async function handleAddCourse(courseID){
-        setUser({...user, courses: [...user.courses, courseID]})
+
+        const updatedUser = {...user, courses: [...user.courses, courseID]}; 
+        // Update state  
+        setUser(updatedUser); 
+        
+        localStorage.setItem('user', JSON.stringify(updatedUser));  
         await axios.put("http://localhost:8080/api/users/addCourse",{
             courseId: courseID,
             userId: user.id
