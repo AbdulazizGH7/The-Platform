@@ -2,11 +2,9 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt');
 const cors = require('cors');
-const Department = require('./models/Department')
 const departments = require('./routes/departments')
 const instructors = require('./routes/instructors')
 const courses = require('./routes/courses')
-const Course = require('./models/Course')
 const User = require('./models/User')
 
 require('dotenv').config();  // for environment variables
