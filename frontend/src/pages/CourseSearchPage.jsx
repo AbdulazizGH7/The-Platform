@@ -18,17 +18,12 @@ function CourseSearchPage() {
         courseCode: '',
         courseName: '',
         courseDescription: '',
-        courseInst: []
     });
     const [selectedAddDepartment, setSelectedAddDepartment] = useState('');
     const [departments, setDepartments] = useState([])
-    const [courses, setCourses] = useState([])
-    const { user, setUser, instructors, setInstructors} = useData()
+    const [options, setOptions] = useState({})
     const [selectedInstructors, setSelectedInstructors] = useState([])
-    const [options, setOptions] = useState(instructors.map(instructor => ({
-        label: instructor.name,
-        value: instructor.instructorId,
-      })))
+    const { user, setUser} = useData()
     const isAdmin = user.role === "admin";
 
     useEffect(() => {    
@@ -39,15 +34,17 @@ function CourseSearchPage() {
         .catch(error => {  
             console.error('Error fetching data:', error);  
         });
-        
-        {isAdmin && axios.get('http://localhost:8080/api/courses')
-            .then(response =>{
-                setCourses(response.data)
-            })
-            .catch(error =>{
-                console.error('Error fetching data:', error); 
-            })}
 
+        {isAdmin && axios.get('http://localhost:8080/api/instructors')  
+            .then(response => {  
+                setOptions(response.data.map(instructor => ({
+                    label: instructor.name,
+                    value: instructor._id,
+                  })));  
+        })  
+        .catch(error => {  
+            console.error('Error fetching data:', error);  
+        });}
     }, []);
 
     // This function handles the selection of the department
@@ -102,66 +99,61 @@ function CourseSearchPage() {
         setCourseToRemove(null);
     }
 
-    // Needs work...
+    // Shows the add course modal
     function openAddCourseForm() {
         setShowAddCourseForm(true);
     }
 
-    // Needs work...
-    function handleAddCourseSubmit() {
-        if(courses.find((c) => c.courseCode.toLowerCase() === newCourse.courseCode.toLowerCase())){
-            alert("There is a course with the same code")}
-        else if(selectedAddDepartment === '')
-            alert("Please select a department")
-        else if (newCourse.courseCode && newCourse.courseName && newCourse.courseDescription) {
-            setDepartments(prevDepartments => prevDepartments.map(dep => {
-                if (dep.departmentName === selectedAddDepartment) {
-                    return {
-                        ...dep,
-                        courses: [...dep.courses, { courseID: id, courseCode: newCourse.courseCode, courseName: newCourse.courseName }]
-                    };
-                }
-                return dep;
-            }));
+    // This function creates a new course
+    async function handleAddCourseSubmit() {  
+        try {  
+            const instIDs = selectedInstructors.map(inst => inst.value) 
+            // First API call to create course
+            const courseResponse = await axios.post("http://localhost:8080/api/courses", {  
+                courseCode: newCourse.courseCode,  
+                courseName: newCourse.courseName,  
+                description: newCourse.courseDescription,  
+                instructors: instIDs 
+            }); 
+    
+            // The success check should be on courseResponse.data.success 
+            if (!courseResponse.data.success) {  
+                alert(courseResponse.data.message);  
+                return; // Add return to prevent executing the rest of the code  
+            }  
+    
+            // Get the new course ID from the response data  
+            const newCourseId = courseResponse.data.data._id; 
+    
+            // Update department if selectedAddDepartment exists  
+            if (selectedAddDepartment) {  
+                await axios.put("http://localhost:8080/api/departments/addCourse", { 
+                    departmentName: selectedAddDepartment,  
+                    courseId: newCourseId  
+                });
+                const response = await axios.get('http://localhost:8080/api/departments')
+                setDepartments(response.data)  
+            }  
+    
+            // Update instructors if there are any  
+            if (selectedInstructors.length > 0) {  
+                await axios.put("http://localhost:8080/api/instructors/addCourse", {
+                    instructorsId: instIDs,  
+                    courseId: newCourseId  
+                });  
+            }  
+    
+            // If everything succeeded, reset the form  
+            setSelectedAddDepartment("");  
+            setNewCourse({ courseCode: '', courseName: '', courseDescription: '' });  
+            setShowAddCourseForm(false);  
+    
+        } catch (err) {  
+            console.error('Error:', err.response?.data || err.message);  
+            alert('An error occurred: ' + (err.response?.data?.message || err.message));  
+        }  
+    }  
 
-            setCourses(prevCourses => [
-                ...prevCourses,
-                {
-                    courseId: id,
-                    courseCode: newCourse.courseCode,
-                    courseName: newCourse.courseName,
-                    description: newCourse.courseDescription,
-                    prerequisites: [],
-                    instructors: newCourse.courseInst,
-                    experiences: [],
-                    groups: [],
-                    resources: {
-                        oldExams: [],
-                        notes: [],
-                        quizzes: [],
-                        other: []
-                    }
-                }
-            ]);
-
-            const instIDs = selectedInstructors.map(inst => inst.value)
-
-            setInstructors(prevInstructors => prevInstructors.map(inst => {
-                if (instIDs.includes(inst.instructorId)) {
-                    console.log(id)
-                    return {
-                        ...inst,
-                        courses: [...inst.courses, id]
-                    };
-                }
-                return inst;
-            }));
-            
-            setSelectedAddDepartment("")
-            setNewCourse({ courseCode: '', courseName: '', courseDescription: '' });
-            setShowAddCourseForm(false);
-        }
-    }
 
     const filteredCourses = selectedCourse
         ? depCourses.filter(course => course._id === selectedCourse)
@@ -271,7 +263,7 @@ function CourseSearchPage() {
                                 -- Select a Department --
                             </option>
                                 {departments.map((department) => (
-                                <option key={department.departmentId} value={null}>
+                                <option key={department._id} value={null}>
                                     {department.departmentName}
                                 </option>
                             ))}
