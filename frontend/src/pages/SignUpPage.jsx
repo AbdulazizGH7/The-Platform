@@ -75,7 +75,7 @@ function SignUpPage() {
 
     // Handle server-side validation errors if no errors have been found
     try {
-      const response = await axios.post('http://localhost:8080/signup/', {
+      const response = await axios.post('http://localhost:8080/auth/signup/', {
         username,
         email,
         password,
