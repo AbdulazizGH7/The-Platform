@@ -4,6 +4,7 @@ import Popup from '../Components/Popup.jsx';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Button from '../Components/Button';
+import { useUser } from '../contexts/UserContext';
 
 const GroupsPage = () => {
   const [groups, setGroups] = useState([]);
@@ -14,13 +15,14 @@ const GroupsPage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isInstructor, setIsInstructor] = useState(true);
   const [newGroup, setNewGroup] = useState('');
-  const courseID = useParams();
+  const { courseId } = useParams();
+  const { user, setUser } = useUser();
 
   useEffect(() => {
-    console.log('Course ID:', courseID);
+    console.log('Course ID:', courseId);
 
     axios
-      .get(`http://localhost:8080/api/groups/${courseID.courseId}`)
+      .get(`http://localhost:8080/api/groups/${courseId}`)
       .then((response) => {
         console.log('API Response:', response.data);
         setGroups(response.data.groups || []);
@@ -30,7 +32,7 @@ const GroupsPage = () => {
         console.error('Error fetching groups:', error);
         setLoading(false);
       });
-  }, [courseID]);
+  }, [courseId]);
 
   const handleRemoveGroup = (group) => {
     setSelectedGroup(group);
@@ -43,15 +45,30 @@ const GroupsPage = () => {
   };
 
   const confirmRemoveGroup = () => {
-    setGroups(groups.filter(group => group !== selectedGroup));
+    setGroups(groups.filter((group) => group !== selectedGroup));
     setShowCreateGroupPopup(false);
     setSelectedGroup(null);
   };
 
-  const confirmJoinGroup = () => {
-    setGroups(groups.filter(g => g !== selectedGroup));
-    setShowJoinPopup(false);
-    setSelectedGroup(null);
+  const confirmJoinGroup = async () => {
+    if (selectedGroup) {
+      try {
+        const updatedUser = { ...user, groups: [...user.groups, selectedGroup._id] };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+
+        await axios.put('http://localhost:8080/api/users/addGroup', {
+          groupId: selectedGroup._id,
+          userId: user.id,
+        });
+
+        setGroups(groups.filter((g) => g._id !== selectedGroup._id));
+        setShowJoinPopup(false);
+        setSelectedGroup(null);
+      } catch (error) {
+        console.error('Error joining group:', error);
+      }
+    }
   };
 
   const cancelPopup = () => {
@@ -60,11 +77,19 @@ const GroupsPage = () => {
     setSelectedGroup(null);
   };
 
-  const handleCreateGroup = () => {
+  const handleCreateGroup = async () => {
     if (newGroup.trim()) {
-      setGroups([...groups, newGroup.trim()]);
-      setNewGroup('');
-      setShowCreateGroupPopup(false);
+      try {
+        const response = await axios.post('http://localhost:8080/api/groups/create1', {
+          groupName: newGroup.trim(),
+          members: [],
+        });
+        setGroups([...groups, response.data]);
+        setNewGroup('');
+        setShowCreateGroupPopup(false);
+      } catch (error) {
+        console.error('Error creating group:', error);
+      }
     }
   };
 
@@ -73,9 +98,8 @@ const GroupsPage = () => {
   };
 
   return (
-    
     <>
-    {loading ? (
+      {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="min-h-screen text-white flex flex-col items-center p-8">
@@ -89,52 +113,51 @@ const GroupsPage = () => {
                 <GroupCard
                   key={group._id}
                   title={group.groupName}
-                  onRemove={handleRemoveGroup}
-                  onJoin={handleJoinGroup}
+                  onRemove={() => handleRemoveGroup(group)}
+                  onJoin={() => handleJoinGroup(group)}
                   isAdmin={isAdmin}
                 />
               ))}
             </div>
           </div>
 
-      {isInstructor && (
-        <div className="mt-4">
-          <Button
-            title="Add Group"
-            behavior={() => setShowCreateGroupPopup(true)}
-            textSize="base"
-            px="4"
-            py="2"
+          {isInstructor && (
+            <div className="mt-4">
+              <Button
+                title="Add Group"
+                behavior={() => setShowCreateGroupPopup(true)}
+                textSize="base"
+                px="4"
+                py="2"
+              />
+            </div>
+          )}
+
+          {/* Popup for Create Group */}
+          <Popup
+            show={showCreateGroupPopup}
+            title="Create New Group"
+            message="Enter new group name"
+            onConfirm={handleCreateGroup}
+            onCancel={cancelPopup}
+            confirmText="Create"
+            cancelText="Cancel"
+            onInputChange={handleNewGroupInput}
+            inputValue={newGroup}
+          />
+
+          {/* Popup for Join Group Confirmation */}
+          <Popup
+            show={showJoinPopup}
+            title="Confirm Join"
+            message={`Are you sure you want to join the group ${selectedGroup?.groupName}?`}
+            onConfirm={confirmJoinGroup}
+            onCancel={cancelPopup}
+            confirmText="Yes"
+            cancelText="No"
           />
         </div>
       )}
-
-
-      {/* Popup for Create Group */}
-      <Popup
-        show={showCreateGroupPopup}
-        title="Create New Group"
-        message="Enter new group name"
-        onConfirm={handleCreateGroup}
-        onCancel={cancelPopup}
-        confirmText="Create"
-        cancelText="Cancel"
-        onInputChange={handleNewGroupInput}
-        inputValue={newGroup}
-      />
-
-      {/* Popup for Join Group Confirmation */}
-      <Popup
-        show={showJoinPopup}
-        title="Confirm Join"
-        message={`Are you sure you want to join the group ${selectedGroup}?`}
-        onConfirm={confirmJoinGroup}
-        onCancel={cancelPopup}
-        confirmText="Yes"
-        cancelText="No"
-      />
-    </div>
-    )}
     </>
   );
 };

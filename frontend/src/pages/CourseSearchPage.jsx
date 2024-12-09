@@ -26,7 +26,7 @@ function CourseSearchPage() {
     const {user, setUser} = useUser()
     const isAdmin = user.role === "admin";
 
-    useEffect(() => {    
+    useEffect(() => {
         axios.get('http://localhost:8080/api/departments')  
             .then(response => {  
                 setDepartments(response.data);  
@@ -70,7 +70,7 @@ function CourseSearchPage() {
         setUser(updatedUser); 
         
         localStorage.setItem('user', JSON.stringify(updatedUser));  
-        await axios.put("http://localhost:8080/api/users/addCourse",{
+        await axios.put("http://localhost:8080/api/users/addgroup",{
             courseId: courseID,
             userId: user.id
         })

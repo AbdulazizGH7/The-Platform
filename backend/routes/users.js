@@ -105,7 +105,56 @@ router.put('/addCourse', async (req, res) => {
             error: error.message   
         });  
     }  
-});  
+});
+
+router.put('/addGroup', async (req, res) => {
+    try {
+        const { groupId, userId } = req.body;
+
+        // Input validation
+        if (!groupId) {
+            return res.status(400).json({ message: 'Group ID is required' });
+        }
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        // Find group and update members array
+        const updatedGroup = await Group.findByIdAndUpdate(
+            groupId,
+            { $addToSet: { members: userId } }, // $addToSet prevents duplicate entries
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedGroup) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        // Optionally, you can update the User's groups array if needed
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { groups: groupId } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'User added to group successfully',
+            group: updatedGroup,
+            user: updatedUser
+        });
+
+    } catch (error) {
+        console.error('Error adding user to group:', error);
+        res.status(500).json({
+            message: 'Error adding user to group',
+            error: error.message
+        });
+    }
+});
 
 
 module.exports = router;  
