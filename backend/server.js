@@ -1,3 +1,5 @@
+require('dotenv').config();  // for environment variables
+
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors');
@@ -10,7 +12,6 @@ const uploadRoutes = require('./routes/uploads');
 const users = require('./routes/users');
 const groups = require('./routes/groups')
 
-require('dotenv').config();  // for environment variables
 
 const PORT = process.env.PORT || 5000
 
@@ -29,6 +30,8 @@ mongoose.connect(process.env.DB_URL)
 .catch((err) =>{
     console.log("Failed to connect to the DB", err)
 })
+
+const storage = require('./gridfs'); // This now has DB_URL properly set
 
 // Routes
 app.use('/auth', authRoutes);

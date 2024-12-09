@@ -16,22 +16,27 @@ router.get("/", async (req, res) =>{
     }
 })
 
-router.get("/:id", async (req, res) =>{
-    try{
-        const courseId = req.params.id;
-        if(courseId.length <24){
-            return res.status(404).send({ error: "Course not found" })
-        }
-        const course = await Course.findById(courseId).populate('prerequisites', 'courseCode')
-        if (!course) {
-            return res.status(404).send({ error: "Course not found" });
-        }
-        res.send(course)
+router.get("/:id", async (req, res) => {
+    try {
+      const courseId = req.params.id;
+  
+      // Ensure the `id` is valid
+      if (!mongoose.Types.ObjectId.isValid(courseId)) {
+        return res.status(400).json({ error: "Invalid course ID" });
+      }
+  
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.status(404).json({ error: "Course not found" });
+      }
+  
+      res.status(200).json(course);
+    } catch (err) {
+      console.error("Error fetching course:", err);
+      res.status(500).json({ error: "Internal server error" });
     }
-    catch(err){
-        console.log("Error fetching the course", err)
-    }
-})
+  });
+  
 
 router.post('/', async (req, res) => {  
     try {  
