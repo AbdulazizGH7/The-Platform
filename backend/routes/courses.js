@@ -86,6 +86,28 @@ router.post('/', async (req, res) => {
             error: error.message  
         });  
     }  
+});
+
+router.delete('/:id', async (req, res) => {  
+    try {  
+        const courseId = req.params.id;  
+
+        // Check if course exists  
+        const course = await Course.findById(courseId);  
+        if (!course) {  
+            return res.status(404).json({ message: 'Course not found' });  
+        }  
+
+        // Delete the course  
+        await Course.findByIdAndDelete(courseId);  
+
+        res.status(200).json({ message: 'Course deleted successfully' });  
+    } catch (error) {  
+        res.status(500).json({   
+            message: 'Error deleting course',   
+            error: error.message   
+        });  
+    }  
 });  
 
 module.exports = router
