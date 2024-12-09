@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MultiSelect } from "react-multi-select-component";
 import axios from 'axios';
-import { useData } from '../utilities/DataContext';
+import {useUser} from '../contexts/UserContext'
 import DropDown from '../Components/DropDown';
 import Button from '../Components/Button';
 
@@ -23,7 +23,7 @@ function CourseSearchPage() {
     const [departments, setDepartments] = useState([])
     const [options, setOptions] = useState({})
     const [selectedInstructors, setSelectedInstructors] = useState([])
-    const { user, setUser} = useData()
+    const {user, setUser} = useUser()
     const isAdmin = user.role === "admin";
 
     useEffect(() => {    
@@ -63,8 +63,12 @@ function CourseSearchPage() {
     }
 
     // Needs work...
-    function handleAddCourse(courseID){
+    async function handleAddCourse(courseID){
         setUser({...user, courses: [...user.courses, courseID]})
+        await axios.put("http://localhost:8080/api/users/addCourse",{
+            courseId: courseID,
+            userId: user.id
+        })
     }
 
     // Opens the remove course modal
