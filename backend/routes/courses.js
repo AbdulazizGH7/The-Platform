@@ -1,6 +1,10 @@
 const express = require('express')
-const Course = require('../models/Course')
+const mongoose = require('mongoose')
 const router = express.Router()
+const Course = require('../models/Course')
+const Department = require('../models/Department');  
+const Instructor = require('../models/Instructor');  
+const User = require('../models/User');  
 
 router.get("/", async (req, res) =>{
     try{
@@ -88,7 +92,13 @@ router.post('/', async (req, res) => {
     }  
 });
 
+
+// Delete course by ID  
 router.delete('/:id', async (req, res) => {  
+    // Start a session for transaction  
+    const session = await mongoose.startSession();  
+    session.startTransaction();  
+
     try {  
         const courseId = req.params.id;  
 
@@ -98,16 +108,49 @@ router.delete('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Course not found' });  
         }  
 
-        // Delete the course  
-        await Course.findByIdAndDelete(courseId);  
+        // Remove course reference from Department collection  
+        await Department.updateMany(  
+            { courses: courseId },  
+            { $pull: { courses: courseId } },  
+            { session }  
+        );  
 
-        res.status(200).json({ message: 'Course deleted successfully' });  
+        // Remove course reference from Instructor collection  
+        await Instructor.updateMany(  
+            { courses: courseId },  
+            { $pull: { courses: courseId } },  
+            { session }  
+        );  
+
+        // Remove course reference from User collection  
+        await User.updateMany(  
+            { courses: courseId },  
+            { $pull: { courses: courseId } },  
+            { session }  
+        );  
+
+        // Delete the course  
+        await Course.findByIdAndDelete(courseId, { session });  
+
+        // Commit the transaction  
+        await session.commitTransaction();  
+
+        res.status(200).json({   
+            message: 'Course deleted successfully and removed from all references'   
+        });  
+
     } catch (error) {  
+        // If an error occurs, abort the transaction  
+        await session.abortTransaction();  
+
         res.status(500).json({   
             message: 'Error deleting course',   
             error: error.message   
         });  
+    } finally {  
+        // End the session  
+        session.endSession();  
     }  
-});  
+});
 
 module.exports = router

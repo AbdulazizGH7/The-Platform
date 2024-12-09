@@ -67,33 +67,30 @@ function CourseSearchPage() {
         setUser({...user, courses: [...user.courses, courseID]})
     }
 
-    // Needs work...
+    // Opens the remove course modal
     function openRemoveModal(course) {
         setCourseToRemove(course);
         setShowModal(true);
     }
 
-    // Needs work...
-    function handleConfirmRemove() {
-        // Remove the course from the state-based course list
-        setDepCourses(prevCourses => prevCourses.filter(c => c._id !== courseToRemove._id));
-
-        // Remove the course from the original data structure
-        setDepartments(prevDepartments => prevDepartments.map(dep => {
-            if (dep.departmentName === selectedDepartment) {
-                return {
-                    ...dep,
-                    courses: dep.courses.filter(c => c.courseID !== courseToRemove.courseID)
-                };
-            }
-            return dep;
-        }))
-
-        setShowModal(false);
-        setCourseToRemove(null);
+    // This function removes a course
+    async function handleConfirmRemove() {
+        try{
+            await axios.delete(`http://localhost:8080/api/courses/${courseToRemove._id}`)
+            const response = await axios.get('http://localhost:8080/api/departments')
+            setDepartments(response.data) 
+        } catch(err){
+            console.log(err) 
+        } finally{
+            setShowModal(false);
+            setCourseToRemove(null);
+            setSelectedDepartment('')
+            setDepCourses([])
+            setSelectedCourse('')
+        }
     }
 
-    // Needs work...
+    // Closes the remove course modal.
     function handleCancelRemove() {
         setShowModal(false);
         setCourseToRemove(null);
