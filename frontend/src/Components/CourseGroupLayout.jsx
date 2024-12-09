@@ -2,11 +2,11 @@ import React from 'react'
 import SectionCard from './SectionCard'
 import Button from './Button'
 import { Link } from 'react-router-dom'
-import { useData } from '../utilities/DataContext';
+import {useUser} from '../contexts/UserContext';
 
 function CourseGroupLayout() {
 
-  const {user} = useData()
+  const {user} = useUser()
 
   return (
     <>
