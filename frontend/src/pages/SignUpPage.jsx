@@ -44,24 +44,29 @@ function SignUpPage() {
     if (!username) {
       setUsernameError(true);
       setUsernameErrorMessage('Username cannot be empty');
+      hasError = true;
     }
   
     if (!email) {
       setEmailError(true);
       setEmailErrorMessage('Email cannot be empty');
+      hasError = true;
     } else if (!validateEmailFormat(email)) {
       setEmailError(true);
       setEmailErrorMessage('Invalid email format');
+      hasError = true;
     }
   
     if (!password) {
       setPasswordError(true);
       setPasswordErrorMessage('Password cannot be empty');
+      hasError = true;
     }
   
     if (!termsAgreed) {
       setTermsError(true);
       setTermsErrorMessage('You must agree on the Terms of Service');
+      hasError = true;
     }
   
     if (hasError) {

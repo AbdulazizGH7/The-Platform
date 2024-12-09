@@ -27,9 +27,7 @@ mongoose.connect(process.env.DB_URL)
     console.log("Failed to connect to the DB", err)
 })
 
-// ============ USERS ENDPOINTS ============
-
-
+// ============ REGISTERATION ENDPOINTS ============
 
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
@@ -66,6 +64,35 @@ app.post('/signup', async (req, res) => {
   
     res.status(201).json({ message: 'User registered successfully' });
   });
+
+// Login Endpoint
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if user exists by email
+  const user = await User.findOne({ email }).populate('courses');
+  if (!user) {
+    return res.status(400).json({ error: 'Invalid email or password' });
+  }
+
+  // Compare the provided password with the stored hashed password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ error: 'Invalid email or password' });
+  }
+
+  // Return full user data. In a real app, you'd return a token here, too.
+  res.status(200).json({ 
+    message: 'Login successful',
+    user: {
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      courses: user.courses,
+      //groups: user.groups
+    }
+  });
+});
 
 // Routes
 app.use('/api/departments', departments)
