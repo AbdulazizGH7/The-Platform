@@ -4,9 +4,10 @@ const cors = require('cors');
 const departments = require('./routes/departments')
 const instructors = require('./routes/instructors')
 const courses = require('./routes/courses')
-const authRoutes = require('./routes/auth');
+const resources = require('./routes/resources')
+const authRoutes = require('./routes/auth'); // Import the auth router
+const uploadRoutes = require('./routes/uploads');
 const users = require('./routes/users');
-
 
 require('dotenv').config();  // for environment variables
 
@@ -33,4 +34,6 @@ app.use('/auth', authRoutes);
 app.use('/api/departments', departments)
 app.use('/api/instructors', instructors)
 app.use("/api/courses", courses)
-app.use('/api/users', users)
+app.use('/api/users', users);
+app.use('/api/resources', resources);
+app.use('/upload', uploadRoutes);
