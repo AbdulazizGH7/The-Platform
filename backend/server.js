@@ -5,6 +5,7 @@ const cors = require('cors');
 const departments = require('./routes/departments')
 const instructors = require('./routes/instructors')
 const courses = require('./routes/courses')
+const users = require('./routes/users')
 const User = require('./models/User')
 
 require('dotenv').config();  // for environment variables
@@ -62,7 +63,14 @@ app.post('/signup', async (req, res) => {
     await newUser.save();
 
   
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'User registered successfully', user:{
+      id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      role: 'student',
+      courses: newUser.courses,
+      groups: newUser.groups
+    } });
   });
 
 // Login Endpoint
@@ -70,7 +78,7 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   // Check if user exists by email
-  const user = await User.findOne({ email }).populate('courses');
+  const user = await User.findOne({ email });
   if (!user) {
     return res.status(400).json({ error: 'Invalid email or password' });
   }
@@ -85,16 +93,18 @@ app.post('/login', async (req, res) => {
   res.status(200).json({ 
     message: 'Login successful',
     user: {
+      id: user._id,
       username: user.username,
       email: user.email,
       role: user.role,
       courses: user.courses,
-      //groups: user.groups
+      groups: user.groups
     }
   });
 });
 
 // Routes
+app.use('/api/users', users)
 app.use('/api/departments', departments)
 app.use('/api/instructors', instructors)
 app.use("/api/courses", courses)

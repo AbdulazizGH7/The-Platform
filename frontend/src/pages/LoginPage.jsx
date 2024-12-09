@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Computer from "../assets/Images/Computer.svg";
 import { useNavigate } from 'react-router-dom';
-import { useData } from '../utilities/DataContext';
+import { useUser } from '../contexts/UserContext'
 import axios from 'axios';
 
 function LoginPage() {
@@ -10,8 +10,7 @@ function LoginPage() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
-  const { setUser } = useData(); // Now you have access to setUser
+  const { login } = useUser(); 
 
   const navigate = useNavigate();
 
@@ -43,7 +42,7 @@ function LoginPage() {
       const response = await axios.post('http://localhost:8080/login', { email, password });
   
       if (response.status === 200) {
-        setUser(response.data.user); // user is now loaded from the DB
+        login(response.data.user);// user is now loaded from the DB
         navigate('/home');
       }
     } catch (error) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Computer from "../assets/Images/Computer.svg";
 import { useNavigate } from 'react-router-dom';
-import { useData } from '../utilities/DataContext';
+import { useUser } from '../contexts/UserContext'
 import axios from 'axios'
 function SignUpPage() {
   const [username, setUsername] = useState('');
@@ -19,7 +19,7 @@ function SignUpPage() {
   const [termsError, setTermsError] = useState(false);
   const [termsErrorMessage, setTermsErrorMessage] = useState('');
 
-  const { users, addUser } = useData();
+  const {login} = useUser()
   const navigate = useNavigate();
 
   const validateEmailFormat = (email) => {
@@ -82,6 +82,7 @@ function SignUpPage() {
       });
     
       if (response.status === 201) {
+        login(response.data.user)
         navigate('/home');
       }
     } catch (error) {
@@ -127,7 +128,7 @@ function SignUpPage() {
     }
 
     // Proceed to add user and navigate to home
-    addUser({ username, email, password });
+    login(response.data.user)
     navigate('/home');
   };
 

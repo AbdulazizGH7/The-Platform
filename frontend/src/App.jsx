@@ -7,13 +7,14 @@ import LoginPage from "./pages/LoginPage";
 import CoursePage from './pages/CoursePage'
 import ResourcesPage from "./Components/Resources/ResourcesPage";
 import ResourcesList from "./Components/Resources/ResourcesList";
-import { DataProvider } from "./utilities/DataContext";
+import { UserProvider } from './contexts/UserContext'; 
 import GroupsPage from './pages/GroupsPage'
 import AnnouncementsPage from "./pages/AnnouncementsPage"
 import SignUpPage from "./pages/SignUpPage";
 import CourseEvaluationPage from "./pages/CourseEvaluationPage";
 import EvaluationPage from "./pages/EvaluationPage";
 import InstructorListPage from "./pages/InstructorListPage";
+
 
 function App() {
   const router = createBrowserRouter(
@@ -23,7 +24,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/" element={<MainLayout />}>
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/home" element={<HomePage/>} />
           <Route path="/courseSearch" element={<CourseSearchPage />} />
           <Route path="/course/:courseId" element={<CoursePage/>}/>
           <Route path="/course/:courseId/groups"element={<GroupsPage></GroupsPage>} />
@@ -40,9 +41,9 @@ function App() {
 
   return (
     <>
-    <DataProvider>
+    <UserProvider>
       <RouterProvider router={router} />
-    </DataProvider>
+    </UserProvider>
     </>
   )
 }
