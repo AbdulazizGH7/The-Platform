@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'; // Make sure this line is included
-import { useData } from '../utilities/DataContext';
+import axios from 'axios';
+import { useUser } from '../contexts/UserContext';
 import { useParams } from 'react-router-dom';
 
 const AnnouncementForm = ({ onSubmit, onClose, initialData = null }) => {
+
   const [message, setMessage] = useState(initialData ? initialData.message : '');
   const [error, setError] = useState('');
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -93,39 +96,41 @@ const AnnouncementCard = ({ instructor, date, message, onEdit, onDelete, isInstr
     <p className="text-white text-sm">{message}</p>
   </div>
 );
+
 const AnnouncementsPage = () => {
-  const { groupId } = useParams();
+  const  groupID  = useParams(); // Get groupId from URL params
   const [showForm, setShowForm] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
-  const { user, groups = [], instructors = [] } = useData();
   const [localAnnouncements, setLocalAnnouncements] = useState([]);
+  const [error, setError] = useState('');
+  const [messages, setmessages] = useState([]);
+  
 
   useEffect(() => {
-    if (!groups.length || !instructors.length || !groupId) return;
+    
+    console.log(groupID)
+      
+        try {          
+            axios.get(`http://localhost:8080/api/groups/masseges/${groupID.groupId}`)
+            .then(response =>{
+              setLocalAnnouncements(response.data)
+              setmessages(response.data);
+              console.log(messages)
+              
+            })
+            .catch(err => console.log(err))    
+        } catch (err) {           
+            // More detailed error logging
+            console.error('Failed to fetch group messages:', err.response?.data || err.message);           
+            setError(`Failed to load announcements: ${err.response?.data?.message || 'Unknown error'}`);       
+        }   
 
-    const group = groups.find(group => group.groupId === parseInt(groupId));
-    if (group) {
-      console.log("Found matching group:", group);
-      const groupAnnouncements = group.messages.map((message, index) => {
-        const instructor = instructors.find(instr => instr.instructorId === group.instructor);
-        return {
-          id: `${group.groupId}-${index}`,
-          instructor: instructor ? instructor.name : "Unknown Instructor",
-          date: new Date(message.timestamp).toLocaleString(),
-          message: message.message,
-        };
-      });
-      setLocalAnnouncements(groupAnnouncements);
-    } else {
-      console.log("No matching group found.");
-    }
-  }, [groupId, groups, instructors]);
+}, []);
 
-  const isInstructor = user.role === "instructor";
 
   const handleNewAnnouncement = (announcement) => {
     if (editingAnnouncement) {
-      setLocalAnnouncements(localAnnouncements.map(ann => 
+      setLocalAnnouncements(localAnnouncements.map((ann) =>
         ann.id === editingAnnouncement.id ? { ...announcement, id: ann.id } : ann
       ));
       setEditingAnnouncement(null);
@@ -139,9 +144,15 @@ const AnnouncementsPage = () => {
     setShowForm(true);
   };
 
-  const handleDelete = (announcementId) => {
+  const handleDelete = async (announcementId) => {
     if (window.confirm('Are you sure you want to delete this announcement?')) {
-      setLocalAnnouncements(localAnnouncements.filter(ann => ann.id !== announcementId));
+      try {
+        await axios.delete(`/api/announcements/${announcementId}`); // Backend endpoint for deleting
+        setLocalAnnouncements(localAnnouncements.filter((ann) => ann.id !== announcementId));
+      } catch (err) {
+        console.error('Failed to delete announcement:', err);
+        setError('Failed to delete announcement.');
+      }
     }
   };
 
@@ -157,24 +168,34 @@ const AnnouncementsPage = () => {
         <hr className="border-t-2 border-white w-auto mx-auto mb-8" />
       </header>
 
-      {isInstructor && !showForm && (
-        <div className="w-full max-w-3xl mb-4">
-          <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg">
-            Add Announcement
-          </button>
-        </div>
+      {error && <p className="bg-red-500 text-white p-3 rounded-lg">{error}</p>}
+
+      {showForm ? (
+        <AnnouncementForm onSubmit={handleNewAnnouncement} onClose={handleCloseForm} initialData={editingAnnouncement} />
+      ) : (
+        <button
+          onClick={() => setShowForm(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg mb-4"
+        >
+          Add Announcement
+        </button>
       )}
 
       <div className="w-full max-w-3xl flex-grow bg-gradient-to-b from-purple-900 to-indigo-900 p-6 rounded-xl shadow-lg overflow-y-auto">
-        {showForm && (
-          <AnnouncementForm onSubmit={handleNewAnnouncement} onClose={handleCloseForm} initialData={editingAnnouncement} />
-        )}
         {localAnnouncements.length > 0 ? (
           localAnnouncements.map((announcement) => (
             <AnnouncementCard
               key={announcement.id}
-              {...announcement}
-              isInstructor={isInstructor}
+              date={new Date(announcement.timestamp).toLocaleString('en-US', {
+                month: 'numeric',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+              })}
+              message={announcement.message}
+              instructor={announcement.senderId.username}
               onEdit={() => handleEdit(announcement)}
               onDelete={() => handleDelete(announcement.id)}
             />
