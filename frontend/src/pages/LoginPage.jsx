@@ -39,7 +39,7 @@ function LoginPage() {
     }
   
     try {
-      const response = await axios.post('http://localhost:8080/login', { email, password });
+      const response = await axios.post('http://localhost:8080/auth/login', { email, password });
   
       if (response.status === 200) {
         login(response.data.user);// user is now loaded from the DB
