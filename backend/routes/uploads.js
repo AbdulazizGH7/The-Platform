@@ -2,36 +2,35 @@
 const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
-const Course = require('../models/Course');
+const storage = require('../gridfs'); // your GridFS storage config
 const Resource = require('../models/Resource');
 const File = require('../models/file');
-const storage = require('../gridfs');
+const Course = require('../models/Course');
 
 const router = express.Router();
 const upload = multer({ storage });
 
-// Expecting formData with: courseCode, category, file
 router.post('/', upload.single('file'), async (req, res) => {
   try {
-    const { courseCode, category } = req.body;
+    const { courseId, category } = req.body;
 
-    if (!courseCode || !category || !req.file) {
-      return res.status(400).json({ error: 'Missing courseCode, category, or file' });
+    if (!courseId || !category || !req.file) {
+      return res.status(400).json({ error: 'Missing courseId, category, or file' });
     }
 
-    // Find the course by courseCode (case-sensitive or insensitive as needed)
-    const course = await Course.findOne({ courseCode: courseCode });
+    // Find the course
+    const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
-    // Find or create the Resource document for this course and category
+    // Find or create the Resource document for this course + category
     let resource = await Resource.findOne({ course: course._id, category: category });
     if (!resource) {
       resource = new Resource({ course: course._id, category: category, files: [] });
     }
 
-    // Create a File document for the uploaded file
+    // Create a File document from req.file
     const newFile = new File({
       name: req.file.originalname,
       type: req.file.mimetype,
@@ -43,7 +42,7 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     await newFile.save();
 
-    // Add file reference to the resource
+    // Add the file to the resource
     resource.files.push(newFile._id);
     await resource.save();
 

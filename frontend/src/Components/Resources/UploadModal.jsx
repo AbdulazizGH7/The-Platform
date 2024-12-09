@@ -1,7 +1,7 @@
-// src/Components/Resources/UploadModal.jsx
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCategory }) {
+function UploadModal({ closeModal, categoryTitles, currentCategory, courseId, onUploadSuccess }) {
   const [selectedCategory, setSelectedCategory] = useState(currentCategory || Object.keys(categoryTitles)[0]);
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -15,7 +15,7 @@ function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCat
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!selectedFile) {
@@ -23,20 +23,29 @@ function UploadModal({ closeModal, addFileToCategory, categoryTitles, currentCat
       return;
     }
 
-    // Construct the file object to match JSON structure
-    const newFile = {
-      name: selectedFile.name, // Use 'name' instead of 'fileName' to match JSON structure
-      type: selectedFile.name.split('.').pop().toUpperCase(),
-      size: selectedFile.size >= 1024 * 1024
-        ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`
-        : `${(selectedFile.size / 1024).toFixed(2)} KB`,
-      dateUploaded: new Date().toISOString().split('T')[0],
-      url: URL.createObjectURL(selectedFile), // Add URL for download if necessary
-    };
+    // Create FormData to send file
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('category', selectedCategory);
+    formData.append('courseId', courseId);
 
-    addFileToCategory(selectedCategory, newFile); // Call the function to add the file to JSON structure
-    setSelectedFile(null);
-    closeModal();
+    try {
+      const response = await axios.post('http://localhost:8080/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      console.log('File upload response:', response.data);
+
+      // Once uploaded, call onUploadSuccess if provided to re-fetch resources
+      if (onUploadSuccess) {
+        onUploadSuccess();
+      }
+
+      setSelectedFile(null);
+      closeModal();
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Failed to upload file. Please try again.');
+    }
   };
 
   return (
