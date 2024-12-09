@@ -37,7 +37,14 @@ router.post('/signup', async (req, res) => {
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
   
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'User registered successfully', user:{
+      id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      role: 'student',
+      courses: newUser.courses,
+      groups: newUser.groups
+    } });
 });
 
 // Login endpoint
@@ -45,7 +52,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
   
     // Check if user exists by email
-    const user = await User.findOne({ email }).populate('courses');
+    const user = await User.findOne({ email })
     if (!user) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
@@ -60,12 +67,15 @@ router.post('/login', async (req, res) => {
     res.status(200).json({ 
       message: 'Login successful',
       user: {
+        id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
         courses: user.courses,
+        groups: user.groups
       }
     });
-});
+  });
+
 
 module.exports = router;
