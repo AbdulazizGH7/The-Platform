@@ -6,6 +6,7 @@ const instructors = require('./routes/instructors')
 const courses = require('./routes/courses')
 const authRoutes = require('./routes/auth');
 const users = require('./routes/users');
+const groups = require('./routes/groups')
 
 
 require('dotenv').config();  // for environment variables
@@ -34,3 +35,4 @@ app.use('/api/departments', departments)
 app.use('/api/instructors', instructors)
 app.use("/api/courses", courses)
 app.use('/api/users', users)
+app.use("/api/groups", groups)
