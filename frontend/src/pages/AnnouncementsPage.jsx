@@ -21,7 +21,7 @@ const AnnouncementForm = ({ onSubmit, onClose, initialData = null }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/api/groups/announcement', {
+      const response = await axios.post('https://the-platform-backend.onrender.com/api/groups/announcement', {
         groupId: groupId.groupId, // Ensure this matches the backend field
         announcement: message.trim(), // Match backend field for the announcement message
         senderId: user.id, // Assuming `user.id` contains the ID of the user
@@ -106,7 +106,7 @@ const AnnouncementsPage = () => {
   useEffect(() => {
     try {
       axios
-        .get(`http://localhost:8080/api/groups/masseges/${groupId.groupId}`)
+        .get(`https://the-platform-backend.onrender.com/api/groups/masseges/${groupId.groupId}`)
         .then((response) => {
           setLocalAnnouncements(response.data);
           setLoading(false);
@@ -123,7 +123,7 @@ const AnnouncementsPage = () => {
 
   const handleDelete = async (announcementId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/announcements/${announcementId}`);
+      await axios.delete(`https://the-platform-backend.onrender.com/api/announcements/${announcementId}`);
       setLocalAnnouncements(localAnnouncements.filter((ann) => ann.id !== announcementId));
       toast.success('Announcement deleted successfully!');
     } catch (err) {
@@ -136,7 +136,11 @@ const AnnouncementsPage = () => {
   return (
     <>
       <ToastNotification />
-      {!loading && (
+      {loading ? (
+        <div className="flex justify-center items-center min-h-screen">
+        <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      ) : (
         <div className="min-h-screen flex flex-col items-center text-white py-12">
           <header className="w-full max-w-3xl mb-8 text-center">
             <h1 className="text-4xl font-bold text-white mb-2">Group Announcements</h1>

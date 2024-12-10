@@ -23,7 +23,7 @@ const GroupsPage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/groups/${courseID.courseId}`)
+      .get(`https://the-platform-backend.onrender.com/api/groups/${courseID.courseId}`)
       .then((response) => {
         setGroups(response.data.groups || []);
         setLoading(false);
@@ -46,7 +46,7 @@ const GroupsPage = () => {
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
 
-      await axios.put('http://localhost:8080/api/users/addGroup', {
+      await axios.put('https://the-platform-backend.onrender.com/api/users/addGroup', {
         groupId: selectedGroup._id,
         userId: user.id,
       });
@@ -68,7 +68,7 @@ const GroupsPage = () => {
     if (!selectedGroup) return;
 
     try {
-      await axios.delete(`http://localhost:8080/api/groups/${selectedGroup._id}`, {
+      await axios.delete(`https://the-platform-backend.onrender.com/api/groups/${selectedGroup._id}`, {
         data: { id: selectedGroup._id }
       });
 
@@ -96,7 +96,7 @@ const GroupsPage = () => {
     if (!newGroup.trim()) return;
 
     try {
-      const response = await axios.post('http://localhost:8080/api/groups/create1', {
+      const response = await axios.post('https://the-platform-backend.onrender.com/api/groups/create1', {
         groupName: newGroup,
         courseId: courseID.courseId,
       });
@@ -119,7 +119,9 @@ const GroupsPage = () => {
     <>
     <ToastNotification />
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex justify-center items-center min-h-screen">
+        <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
       ) : (
         <div className="min-h-screen text-white flex flex-col items-center p-8">
           <header className="w-full max-w-4xl mb-8">

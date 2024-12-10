@@ -39,7 +39,9 @@ function SectionCard({ title, items }) {
         <h2 className="text-gray-100 font-bold text-3xl py-5 sm:text-4xl">{title}</h2>
         <hr className="w-[95%] my-0 mx-auto" />
         <div className="min-h-[200px] flex items-center justify-center">
-          <p className="text-gray-100 text-xl sm:text-2xl md:text-3xl font-semibold px-1">Loading...</p>
+        <div className="flex justify-center items-center min-h-screen">
+        <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
         </div>
       </div>
     );
