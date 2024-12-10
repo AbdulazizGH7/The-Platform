@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import Button from '../Components/Button';
 import { useUser } from '../contexts/UserContext';
+import { toast } from 'react-toastify';
+import ToastNotification from '../Components/Resources/ToastNotification';
 
 const GroupsPage = () => {
   const [showCreateGroupPopup, setShowCreateGroupPopup] = useState(false);
@@ -28,6 +30,7 @@ const GroupsPage = () => {
       })
       .catch((error) => {
         console.error('Error fetching groups:', error);
+        toast.error('Failed to load groups. Please try again.');
         setLoading(false);
       });
   }, [courseID]);
@@ -50,6 +53,7 @@ const GroupsPage = () => {
 
       setShowJoinPopup(false);
       setSelectedGroup(null);
+      toast.success(`Successfully joined group ${selectedGroup.groupName}!`);
     } catch (error) {
       console.error('Error joining group:', error);
     }
@@ -73,9 +77,11 @@ const GroupsPage = () => {
       
       setShowDeleteGroupPopup(false);
       setSelectedGroup(null);
+      toast.success(`Group ${selectedGroup.groupName} deleted successfully.`);
     } catch (error) {
       console.error('Error deleting group:', error);
-      // Optionally, show an error message to the user
+      toast.error('Failed to delete group. Please try again.');
+      
     }
   };
 
@@ -98,8 +104,10 @@ const GroupsPage = () => {
       setGroups([...groups, response.data.group]);
       setNewGroup('');
       setShowCreateGroupPopup(false);
+      toast.success(`Group ${newGroup} created successfully!`);
     } catch (error) {
       console.error('Error creating group:', error);
+      toast.error('Failed to create group. Please try again.');
     }
   };
 
@@ -109,6 +117,7 @@ const GroupsPage = () => {
 
   return (
     <>
+    <ToastNotification />
       {loading ? (
         <p>Loading...</p>
       ) : (
