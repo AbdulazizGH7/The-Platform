@@ -28,14 +28,41 @@ router.get("/:courseId", async (req, res) => {
     }
 });
 
-router.post('/create1', async (req,res) =>{
-    const newGroup = new Group({
-        groupName: req.body.groupName,
-        members:req.body.members,
-    })
-    await newGroup.save()
-    res.send("Ok")
-})
+router.post('/create1', async (req, res) => {
+    try {
+        const { groupName, courseId } = req.body;
+
+        // Validate courseId
+        if (!courseId || courseId.length < 24) {
+            return res.status(400).json({ error: "Invalid Course ID" });
+        }
+
+        // Find the course
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ error: "Course not found" });
+        }
+
+        // Create a new group
+        const newGroup = new Group({
+            groupName,
+            members: [], // Initialize with an empty members list
+        });
+
+        // Save the group
+        const savedGroup = await newGroup.save();
+
+        // Add the group to the course's groups array
+        course.groups.push(savedGroup._id);
+        await course.save();
+
+        res.status(201).json({ group: savedGroup, message: "Group created successfully!" });
+    } catch (error) {
+        console.error('Error creating group:', error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 // router.get('/masseges/:groupId', async (req, res) => {     
 //     try {         
@@ -86,5 +113,6 @@ router.get('/masseges/:groupId', async (req, res) => {
         });
     }
 });
+
 
 module.exports = router;

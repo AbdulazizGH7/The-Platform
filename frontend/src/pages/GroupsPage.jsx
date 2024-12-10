@@ -7,12 +7,15 @@ import Button from '../Components/Button';
 import { useUser } from '../contexts/UserContext';
 
 const GroupsPage = () => {
+  const [showCreateGroupPopup, setShowCreateGroupPopup] = useState(false);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showJoinPopup, setShowJoinPopup] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const courseID = useParams();
   const { user, setUser } = useUser();
+  const [newGroup, setNewGroup] = useState('');
+  const isInstructor = user.role === "instructor";
 
   useEffect(() => {
     axios
@@ -53,7 +56,31 @@ const GroupsPage = () => {
   const cancelPopup = () => {
     setShowJoinPopup(false);
     setSelectedGroup(null);
+    setShowCreateGroupPopup(false);
+    setShowRemoveGroupPopup(false);
   };
+  
+  const handleCreateGroup = async () => {
+    if (!newGroup.trim()) return;
+
+    try {
+        const response = await axios.post('http://localhost:8080/api/groups/create1', {
+            groupName: newGroup,
+            courseId: courseID.courseId,
+        });
+
+        setGroups([...groups, response.data.group]);
+        setNewGroup('');
+        setShowCreateGroupPopup(false);
+    } catch (error) {
+        console.error('Error creating group:', error);
+    }
+};
+
+  const handleNewGroupInput = (e) => {
+    setNewGroup(e.target.value);
+  };
+  
 
   return (
     <>
@@ -66,7 +93,7 @@ const GroupsPage = () => {
           </header>
 
           <div className="w-full max-w-4xl overflow-y-auto h-96 p-4 bg-purple-800 bg-opacity-60 rounded-lg shadow-lg scrollbar-custom">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{console.log(user.role)}
               {groups.map((group) => {
                 const isMember = user.groups.includes(group._id);
                 return (
@@ -91,6 +118,28 @@ const GroupsPage = () => {
               })}
             </div>
           </div>
+          {isInstructor && (
+        <div className="mt-4">
+          <Button
+            title="Add Group"
+            behavior={() => setShowCreateGroupPopup(true)}
+            textSize="base"
+            px="4"
+            py="2"
+          />
+        </div>
+      )}
+      <Popup
+        show={showCreateGroupPopup}
+        title="Create New Group"
+        message="Enter new group name"
+        onConfirm={handleCreateGroup}
+        onCancel={cancelPopup}
+        confirmText="Create"
+        cancelText="Cancel"
+        onInputChange={handleNewGroupInput}
+        inputValue={newGroup}
+      />
 
           {/* Popup for Join Group Confirmation */}
           <Popup
