@@ -17,7 +17,7 @@ function CourseGroupLayout() {
       </div>
 
       {/* Action Button */}
-      <div className="mt-8">
+      <div className="my-8">
         <Link to="/courseSearch" aria-label="Search for a course">
           <Button
             title="Search Course"
