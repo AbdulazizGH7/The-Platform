@@ -12,17 +12,31 @@ To set up the project on your local machine, follow these steps:
 2. Open a new terminal and navigate to the project directory:
    ```bash
    cd <project-directory>
-3. Install the dependencies:
+3. Navigate to the backend:
+   ```bash
+   cd ./backend
+4. Install the dependencies:
    ```bash
    npm install
-4. Start the development server:
+5. create the environment file (.env) with these values:
+   ```bash
+   PORT = 8080
+   DB_URL = mongodb+srv://theplatform:theplatform12345@nodevault.gqqlg.mongodb.net/ThePlatform?retryWrites=true&w=majority&appName=NodeVault
+6. Start the development server:
    ```bash
    npm run dev
-4. Login In:
+7. Navigate to the frontend:
+   ```bash
+   cd ./frontend
+8. Install the dependencies:
+   ```bash
+   npm install
+9. Start the development server:
+   ```bash
+   npm run dev
+10. Login In:
    | Email | Password |
    | -------- | ------- |
-   | student@kfupm.com | student |
+   | admin@kfupm.edu.sa | admin |
    | instructor@kfupm.com | instructor |
-   | admin@kfupm.com | admin |
 
-**Note: Currently, the platform lacks backend support, so any page refresh may cause the site to break. Additionally, some functionalities might not work as expected for the same reason mentioned.**
