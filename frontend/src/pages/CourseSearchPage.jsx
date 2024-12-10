@@ -63,18 +63,36 @@ function CourseSearchPage() {
     }
 
     // Needs work...
-    async function handleAddCourse(courseID){
-
-        const updatedUser = {...user, courses: [...user.courses, courseID]}; 
-        // Update state  
-        setUser(updatedUser); 
-        
-        localStorage.setItem('user', JSON.stringify(updatedUser));  
-        await axios.put("http://localhost:8080/api/users/addCourse",{
-            courseId: courseID,
-            userId: user.id
-        })
-    }
+    async function handleAddCourse(courseID) {  
+        try {  
+            if (!user.courses.includes(courseID)) {  
+                // Add course  
+                const updatedUser = { ...user, courses: [...user.courses, courseID] };  
+                setUser(updatedUser);  
+                localStorage.setItem('user', JSON.stringify(updatedUser));  
+    
+                await axios.put("http://localhost:8080/api/users/addCourse", {  
+                    courseId: courseID,  
+                    userId: user.id  
+                });  
+            } else {  
+                // Remove course  
+                const newUserCourses = user.courses.filter(courseId => courseId !== courseID);  
+                const updatedUser = { ...user, courses: newUserCourses };  
+                setUser(updatedUser);  
+                localStorage.setItem('user', JSON.stringify(updatedUser));  
+    
+                await axios.put("http://localhost:8080/api/users/removeCourse", {  
+                    courseId: courseID,  
+                    userId: user.id  
+                });  
+            }  
+        } catch (error) {  
+            console.error("Error updating course:", error);   
+            const originalUser = JSON.parse(localStorage.getItem('user'));  
+            setUser(originalUser);  
+        }  
+    }  
 
     // Opens the remove course modal
     function openRemoveModal(course) {

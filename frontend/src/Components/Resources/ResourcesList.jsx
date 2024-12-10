@@ -1,18 +1,21 @@
+// frontend/src/Components/Resources/ResourceList.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from 'axios'; 
 
 import ResourcesTable from './ResourcesTable';
 import Popup from '../Popup';
+import { useUser } from '../../contexts/UserContext'; // Corrected import path
 
 const categoryTitles = {
-  "oldExams": "Old Exams",
-  "notes": "Notes",
-  "quizzes": "Quizzes",
-  "other": "Extra"
+  oldExams: 'Old Exams',
+  notes: 'Notes',
+  quizzes: 'Quizzes',
+  other: 'Extra',
 };
 
-function ResourcesList() {
+function ResourceList() {
   const { courseId, category } = useParams();
 
   const [course, setCourse] = useState(null);
@@ -20,7 +23,7 @@ function ResourcesList() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [fileToDelete, setFileToDelete] = useState(null);
 
-  const [user, setUser] = useState(null);
+  const { user } = useUser(); // Destructure user from context
 
   // Fetch course details
   useEffect(() => {
@@ -29,26 +32,26 @@ function ResourcesList() {
         const res = await axios.get(`http://localhost:8080/api/courses/${courseId}`);
         setCourse(res.data);
       } catch (error) {
-        console.error("Error fetching course:", error);
+        console.error('Error fetching course:', error);
       }
     }
     fetchCourse();
   }, [courseId]);
-  
+
   // Fetch files in the category
   useEffect(() => {
     async function fetchCategoryResources() {
       try {
         const res = await axios.get(`http://localhost:8080/api/resources/${courseId}/${category}`);
         const resource = res.data;
-  
+
         if (resource && resource.files) {
-          setFileList(resource.files); // Ensure files include _id
+          setFileList(resource.files); // Ensure files include _id and gridfsId
         } else {
           setFileList([]);
         }
       } catch (error) {
-        console.error("Error fetching resources:", error);
+        console.error('Error fetching resources:', error);
         setFileList([]);
       }
     }
@@ -59,20 +62,30 @@ function ResourcesList() {
   const courseID = course ? course.courseCode : '';
 
   const confirmDelete = async () => {
+    console.log('Attempting to delete file with ID:', fileToDelete);
     try {
-      await axios.delete(`http://localhost:8080/upload/${fileToDelete}`);
-      setFileList((prev) => prev.filter((file) => file._id !== fileToDelete));
-      setShowDeleteConfirmation(false);
+        await axios.delete(`http://localhost:8080/upload/${fileToDelete}`);
+        setFileList((prev) => prev.filter((file) => file._id !== fileToDelete));
+        setShowDeleteConfirmation(false);
+        // Optionally, display a success notification
+        // toast.success('File deleted successfully!');
     } catch (error) {
-      console.error("Error deleting file:", error);
-      alert('Failed to delete file. Please try again.');
+        console.error('Error deleting file:', error);
+        alert('Failed to delete file. Please try again.');
+        // Optionally, display an error notification
+        // toast.error('Failed to delete file. Please try again.');
     }
-  };
+};
+
 
   const deleteFile = (fileId) => {
     setFileToDelete(fileId);
     setShowDeleteConfirmation(true);
   };
+
+  if (!user) {
+    return <div className="text-white">Loading user information...</div>;
+  }
 
   return (
     <div className="w-full px-4 py-8 bg-gradient-to-b from-[#171352] to-[#7A4FBF] mt-8">
@@ -89,7 +102,7 @@ function ResourcesList() {
       <div className="max-w-screen-2xl mx-auto bg-[#1a1a2e] rounded-lg shadow-lg overflow-hidden">
         {fileList.length > 0 ? (
           <div className="overflow-x-auto">
-            <ResourcesTable files={fileList} isAdmin={user?.role === 'admin'} onDelete={deleteFile} />
+            <ResourcesTable files={fileList} isAdmin={user.role === 'admin'} onDelete={deleteFile} />
           </div>
         ) : (
           <div className="py-8 text-center">
@@ -98,7 +111,7 @@ function ResourcesList() {
         )}
       </div>
 
-      {user?.role === 'admin' && (
+      {showDeleteConfirmation && (
         <Popup
           show={showDeleteConfirmation}
           title="Confirm Deletion"
@@ -113,4 +126,4 @@ function ResourcesList() {
   );
 }
 
-export default ResourcesList;
+export default ResourceList;

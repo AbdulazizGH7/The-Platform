@@ -156,5 +156,39 @@ router.put('/addGroup', async (req, res) => {
     }
 });
 
+router.put('/removeCourse', async (req, res) => {  
+    try {   
+        const { courseId, userId } = req.body;  
+
+        // Input validation  
+        if (!courseId) {  
+            return res.status(400).json({ message: 'Course ID is required' });  
+        }  
+
+        // Find user and update courses array  
+        const updatedUser = await User.findByIdAndUpdate(  
+            userId,  
+            { $pull: { courses: courseId } },  
+            { new: true, runValidators: true }  
+        );  
+
+        if (!updatedUser) {  
+            return res.status(404).json({ message: 'User not found' });  
+        }  
+
+        res.status(200).json({  
+            message: 'Course removed successfully',  
+            user: updatedUser  
+        });  
+
+    } catch (error) {  
+        console.error('Error removing course to user:', error);  
+        res.status(500).json({   
+            message: 'Error removing course to user',  
+            error: error.message   
+        });  
+    }  
+});
+
 
 module.exports = router;  
