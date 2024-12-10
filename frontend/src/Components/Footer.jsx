@@ -5,7 +5,7 @@ function Footer() {
     <footer className='text-center mt-auto'>
         <hr />
         <a
-        href="mailto:ThePlatform@gmail.com"
+        href="mailto:ThePlatformksa@outlook.com"
         className='text-gray-100 font-light text-lg lg:text-xl'>
         Contact Us</a>
     </footer>
