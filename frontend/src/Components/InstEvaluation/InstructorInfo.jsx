@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { EvaluationContext } from './EvaluationContext';
 import Create from '../../assets/Images/Create.svg';
-import { useData } from '../../utilities/DataContext';
+import { useUser } from '../../contexts/UserContext';
 import { useParams } from 'react-router-dom';
+import axios from 'axios'; // Import Axios for API requests
 
 const StarRating = ({ count, setRating, isReadOnly = false }) => {
   const [hover, setHover] = useState(0);
@@ -33,38 +34,40 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
 };
 
 const InstructorInfo = () => {
-  const { instructorId } = useParams()
-  const { instructors, user } = useData();
-  
-   const isAdmin = user.role === 'admin';
- console.log('User:', user, 'Is Admin:', isAdmin);
-  
-    const instructor = instructors.find((c) => c.instructorId === Number(instructorId))
+  const { instructorId } = useParams();
+  const { user } = useUser();
+  const isAdmin = user.role === 'admin';
 
+  const [instructor, setInstructor] = useState(null);
   const [isWriteFeedbackModalOpen, setIsWriteFeedbackModalOpen] = useState(false);
   const { addFeedback, feedbacks } = useContext(EvaluationContext);
 
-  // For displaying the averages on the main page
   const [avgPersonality, setAvgPersonality] = useState(0);
   const [avgTeaching, setAvgTeaching] = useState(0);
   const [avgGrading, setAvgGrading] = useState(0);
 
-  // For capturing user inputs in the modal
   const [personality, setPersonality] = useState(0);
   const [teaching, setTeaching] = useState(0);
   const [grading, setGrading] = useState(0);
   const [reviewContent, setReviewContent] = useState('');
   const [error, setError] = useState('');
 
-  // Fetch instructor information dynamically
+  // Fetch instructor data from MongoDB based on instructorId
   useEffect(() => {
-    import('../../data/instructors.json')
-      .then((data) => {
-        const instructorData = data.instructorId; 
-        setInstructor(instructorData);
+    axios.get('http://localhost:8080/api/instructors') // Replace with your backend API URL
+      .then((response) => {
+        const instructorData = response.data.find((instructor) => instructor._id === instructorId); // Match using _id
+        if (instructorData) {
+          setInstructor(instructorData);
+        } else {
+          setError('Instructor not found');
+        }
       })
-        .catch((err) => console.error('Error loading instructor data:', err));
-  }, []);
+      .catch((err) => {
+        console.error('Error fetching instructor data:', err);
+        setError('Failed to fetch instructor data');
+      });
+  }, [instructorId]);  // Use instructorId directly, no need to parse it
 
   // Calculate averages when the feedback list changes
   useEffect(() => {
@@ -83,7 +86,7 @@ const InstructorInfo = () => {
     }
   }, [feedbacks]);
 
-  // Open modal and reset state
+  // Handle opening the feedback modal
   const handleOpenModal = () => {
     setPersonality(0);
     setTeaching(0);
@@ -93,27 +96,32 @@ const InstructorInfo = () => {
     setIsWriteFeedbackModalOpen(true);
   };
 
-  // Submit feedback
+  // Handle submitting the feedback
   const handleSubmitFeedback = (e) => {
     e.preventDefault();
-
-    // Validation: Ensure all ratings are selected
     if (personality === 0 || teaching === 0 || grading === 0) {
-      setError('Please select ratings for Personality, Teaching, and Grading.');
-      return;
+        setError('Please select ratings for Personality, Teaching, and Grading.');
+        return;
     }
 
     const newFeedback = {
-      metrics: {
-        Personality: personality,
-        Teaching: teaching,
-        Grading: grading,
-      },
-      review: reviewContent,
+        metrics: { Personality: personality, Teaching: teaching, Grading: grading },
+        review: reviewContent,
     };
-    addFeedback(newFeedback);
-    setIsWriteFeedbackModalOpen(false);
-  };
+
+    // Make an API call to add the feedback to the database
+    axios.put(`http://localhost:8080/api/instructors/addFeedback/${instructorId}`, newFeedback)
+        .then((response) => {
+            // After feedback is added successfully, update the state with the new feedback
+            addFeedback(response.data.reviews);  // Assuming response.data contains the updated reviews array
+            setIsWriteFeedbackModalOpen(false);
+        })
+        .catch((error) => {
+            console.error('Error submitting feedback:', error);
+            setError('Failed to submit feedback');
+        });
+};
+
 
   if (!instructor) {
     return <p>Loading instructor information...</p>;
@@ -156,13 +164,15 @@ const InstructorInfo = () => {
       </div>
 
       {/* Write Feedback Button */}
-      {!isAdmin && <button
-        className="flex items-center gap-2 px-4 mt-10 text-xl font-bold text-white rounded-3xl bg-gradient-to-r from-[#171352] to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]"
-        onClick={handleOpenModal}
-      >
-        <img src={Create} alt="Create" className="w-10 h-10" />
-        Write Feedback
-      </button>}
+      {!isAdmin && (
+        <button
+          className="flex items-center gap-2 px-4 mt-10 text-xl font-bold text-white rounded-3xl bg-gradient-to-r from-[#171352] to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]"
+          onClick={handleOpenModal}
+        >
+          <img src={Create} alt="Create" className="w-10 h-10" />
+          Write Feedback
+        </button>
+      )}
 
       {/* Modal for Writing Feedback */}
       {isWriteFeedbackModalOpen && (
@@ -178,9 +188,7 @@ const InstructorInfo = () => {
               </button>
             </div>
 
-            {error && (
-              <p className="text-red-500 text-center font-medium mb-4">{error}</p>
-            )}
+            {error && <p className="text-red-500 text-center font-medium mb-4">{error}</p>}
 
             <form onSubmit={handleSubmitFeedback}>
               <div className="flex flex-col lg:flex-row gap-6">
@@ -227,5 +235,3 @@ const InstructorInfo = () => {
 };
 
 export default InstructorInfo;
-
-

@@ -4,13 +4,99 @@ const router = express.Router()
 
 router.get("/", async (req, res) =>{
     try{
-        const instructors = await Instructor.find()
+        const instructors = await Instructor.find().populate('reviews');
         res.send(instructors)
     }
     catch(err){
         console.log("Error fetching the instructors", err)
     }
 })
+
+router.delete('/:instructorId/deleteFeedback', async (req, res) => {
+    const { instructorId } = req.params;
+    const { feedbackId } = req.body;
+    console.log('Deleting feedback:', feedbackId);
+    
+    try {
+      const instructor = await Instructor.findById(instructorId);
+      if (!instructor) {
+        return res.status(404).json({ message: 'Instructor not found' });
+      }
+  
+      instructor.reviews = instructor.reviews.filter((review) => review._id.toString() !== feedbackId);
+      await instructor.save();
+  
+      res.status(200).json({ message: 'Feedback deleted successfully' });
+    } catch (err) {
+      console.error('Error deleting feedback:', err);
+      res.status(500).json({ message: 'Failed to delete feedback' });
+    }
+  });
+  
+  
+  
+
+  router.put('/addFeedback/:instructorId', async (req, res) => {
+    const { instructorId } = req.params;
+    const { metrics, review } = req.body;  // Assuming the new feedback is in the request body
+  
+    try {
+      const instructor = await Instructor.findById(instructorId);
+      if (!instructor) {
+        return res.status(404).json({ message: 'Instructor not found' });
+      }
+  
+      // Add new review
+      const newReview = {
+        metrics,
+        review,
+      };
+  
+      instructor.reviews.push(newReview);
+      await instructor.save();
+  
+      // Return the updated reviews array
+      res.status(200).json({ reviews: instructor.reviews });
+    } catch (err) {
+      console.error('Error adding feedback:', err);
+      res.status(500).json({ message: 'Failed to add feedback' });
+    }
+  });
+  
+
+
+router.delete('/feedback/:feedbackId', async (req, res) => {
+    const { feedbackId } = req.params;
+
+    try {
+        // Find instructor and remove feedback
+        const instructor = await Instructor.findOne({ 'reviews._id': feedbackId });
+
+        if (!instructor) {
+            return res.status(404).send({ message: 'Instructor or feedback not found' });
+        }
+
+        // Remove feedback by its ID
+        instructor.reviews = instructor.reviews.filter((review) => review._id.toString() !== feedbackId);
+        await instructor.save();
+
+        res.status(200).send({ message: 'Feedback deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting feedback:', err);
+        res.status(500).send({ message: 'Error deleting feedback' });
+    }
+});
+
+router.get("/api/instructors", async (req, res) => {
+    try {
+      const instructors = await Instructor.find(); // MongoDB fetch
+      res.status(200).json(instructors);
+    } catch (err) {
+      console.error("Error fetching instructors:", err);
+      res.status(500).json({ message: "Failed to fetch instructors" });
+    }
+  });
+  
 
 router.put('/addCourse', async (req, res) => {  
     try {  
