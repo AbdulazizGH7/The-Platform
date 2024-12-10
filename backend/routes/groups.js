@@ -2,6 +2,7 @@ const express = require('express')
 const Group = require('../models/Group')
 const Course = require('../models/Course')
 const router = express.Router()
+const mongoose = require('mongoose')
 
 
 // GET group by ID
@@ -113,6 +114,57 @@ router.get('/masseges/:groupId', async (req, res) => {
         });
     }
 });
+
+
+router.post('/announcement', async (req, res) => {
+    try {
+        const { groupId, announcement, senderId } = req.body;
+
+
+        // Validate `groupId` and `senderId`
+        if (!mongoose.Types.ObjectId.isValid(groupId) || !mongoose.Types.ObjectId.isValid(senderId)) {
+            return res.status(400).json({ error: "Invalid groupId or senderId." });
+        }
+
+        // Find the group
+        const group = await Group.findById(groupId);
+        if (!group) {
+            return res.status(404).json({ error: "Group not found." });
+        }
+
+        // Create a new announcement
+        const newAnnouncement = {
+            senderId,
+            message: announcement,
+            timestamp: new Date(),
+        };
+
+        // Add the announcement to the group's messages
+        group.groupMessages.push(newAnnouncement);
+        await group.save();
+
+        // Populate the sender's information for the last message
+        await group.populate({
+            path: 'groupMessages.senderId',
+            select: 'username', // Only include necessary fields
+        });
+
+        // Get the last added message
+        const savedAnnouncement = group.groupMessages[group.groupMessages.length - 1];
+
+        res.status(201).json({
+            message: "Announcement published successfully!",
+            announcement: savedAnnouncement,
+        });
+    } catch (error) {
+        console.error("Error adding announcement:", error);
+        res.status(500).json({
+            error: "Internal Server Error",
+            details: error.message,
+        });
+    }
+});
+
 
 
 module.exports = router;
