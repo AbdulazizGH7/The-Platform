@@ -40,13 +40,13 @@ router.get("/:id", async (req, res) => {
 
 router.post('/', async (req, res) => {  
     try {  
-        const { courseCode, courseName, description, instructors } = req.body;  
+        const { courseCode, courseName, description, instructors, department } = req.body;  
 
         // Validation checks  
-        if (!courseCode || !courseName || !description) {  
+        if (!courseCode || !courseName || !description || !department) {  
             return res.status(400).json({  
                 success: false,  
-                message: 'courseCode, courseName, and description are required fields'  
+                message: 'courseCode, courseName, department, and description are required fields'  
             });  
         }  
 
