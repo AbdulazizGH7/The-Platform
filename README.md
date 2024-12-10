@@ -35,6 +35,7 @@ To set up the project on your local machine, follow these steps:
    ```bash
    npm run dev
 10. Login In:
+
    | Email | Password |
    | -------- | ------- |
    | admin@kfupm.edu.sa | admin |
