@@ -5,6 +5,8 @@ import axios from 'axios';
 import {useUser} from '../contexts/UserContext'
 import DropDown from '../Components/DropDown';
 import Button from '../Components/Button';
+import { toast } from 'react-toastify';
+import ToastNotification from '../Components/Resources/ToastNotification';
 
 function CourseSearchPage() {
 
@@ -62,7 +64,7 @@ function CourseSearchPage() {
         setSelectedCourse(courseCode);
     }
 
-    // Needs work...
+    // This function add/remove courses for the user
     async function handleAddCourse(courseID) {  
         try {  
             if (!user.courses.includes(courseID)) {  
@@ -70,24 +72,27 @@ function CourseSearchPage() {
                 const updatedUser = { ...user, courses: [...user.courses, courseID] };  
                 setUser(updatedUser);  
                 localStorage.setItem('user', JSON.stringify(updatedUser));  
-    
+                toast.success("Course has been added successfully!")
+
                 await axios.put("http://localhost:8080/api/users/addCourse", {  
                     courseId: courseID,  
                     userId: user.id  
-                });  
+                });
             } else {  
                 // Remove course  
                 const newUserCourses = user.courses.filter(courseId => courseId !== courseID);  
                 const updatedUser = { ...user, courses: newUserCourses };  
                 setUser(updatedUser);  
-                localStorage.setItem('user', JSON.stringify(updatedUser));  
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                toast.success("Course has been removed successfully!")  
     
                 await axios.put("http://localhost:8080/api/users/removeCourse", {  
                     courseId: courseID,  
                     userId: user.id  
                 });  
             }  
-        } catch (error) {  
+        } catch (error) {
+            toast.error("Error updating course:", error) 
             console.error("Error updating course:", error);   
             const originalUser = JSON.parse(localStorage.getItem('user'));  
             setUser(originalUser);  
@@ -105,9 +110,11 @@ function CourseSearchPage() {
         try{
             await axios.delete(`http://localhost:8080/api/courses/${courseToRemove._id}`)
             const response = await axios.get('http://localhost:8080/api/departments')
-            setDepartments(response.data) 
+            setDepartments(response.data)
+            toast.success("Course has been deleted successfully!")
         } catch(err){
-            console.log(err) 
+            console.log(err)
+            toast.error(err) 
         } finally{
             setShowModal(false);
             setCourseToRemove(null);
@@ -137,12 +144,13 @@ function CourseSearchPage() {
                 courseCode: newCourse.courseCode,  
                 courseName: newCourse.courseName,  
                 description: newCourse.courseDescription,  
-                instructors: instIDs 
+                instructors: instIDs,
+                department: selectedAddDepartment
             }); 
     
             // The success check should be on courseResponse.data.success 
             if (!courseResponse.data.success) {  
-                alert(courseResponse.data.message);  
+                toast.error(courseResponse.data.message);  
                 return; // Add return to prevent executing the rest of the code  
             }  
     
@@ -165,7 +173,9 @@ function CourseSearchPage() {
                     instructorsId: instIDs,  
                     courseId: newCourseId  
                 });  
-            }  
+            }
+            
+            toast.success("Course has been created successfully"); 
     
             // If everything succeeded, reset the form  
             setSelectedAddDepartment("");  
@@ -351,6 +361,7 @@ function CourseSearchPage() {
                     </div>
                 </div>
             )}
+            <ToastNotification/>
         </section>
     );
 }
