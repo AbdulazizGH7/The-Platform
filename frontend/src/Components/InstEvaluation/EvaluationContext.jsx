@@ -10,7 +10,7 @@ const EvaluationProvider = ({ children }) => {
 
     useEffect(() => {
         // Fetch instructor reviews dynamically from the backend API
-        axios.get(`http://localhost:8080/api/instructors/${instructorId}`)
+        axios.get(`https://the-platform-backend.onrender.com/api/instructors/${instructorId}`)
             .then((response) => {
                 const instructorData = response.data; 
                 if (instructorData.reviews) {

@@ -56,7 +56,7 @@ const CourseInfo = () => {
 
   useEffect(() => {
     // Fetch course info based on courseId
-    axios.get(`http://localhost:8080/api/courses/${courseId}`)
+    axios.get(`https://the-platform-backend.onrender.com/api/courses/${courseId}`)
       .then((response) => {
         setCourse(response.data);
       })

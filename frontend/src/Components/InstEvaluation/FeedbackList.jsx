@@ -11,7 +11,7 @@ const FeedbackList = () => {
   const deleteFeedback = (feedbackId, instructorId) => {
     console.log('Deleting feedback with ID:', feedbackId, 'Instructor ID:', instructorId);
     axios
-      .delete(`http://localhost:8080/api/instructors/${instructorId}/deleteFeedback`, {
+      .delete(`https://the-platform-backend.onrender.com/api/instructors/${instructorId}/deleteFeedback`, {
         data: { feedbackId },
       })
       .then(() => {

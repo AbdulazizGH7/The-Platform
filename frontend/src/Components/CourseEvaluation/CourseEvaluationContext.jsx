@@ -9,7 +9,7 @@ const CourseEvaluationProvider = ({ children }) => {
   const { courseId } = useParams();
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/experiences/${courseId}/experiences`)
+    axios.get(`https://the-platform-backend.onrender.com/api/experiences/${courseId}/experiences`)
       .then((response) => {
         setExperiences(response.data);  // Assuming the backend returns experiences for a specific course
       })
@@ -25,7 +25,7 @@ const CourseEvaluationProvider = ({ children }) => {
       console.log('Attempting to add experience:', { courseId, metrics, description });
   
       const response = await axios.put(
-        `http://localhost:8080/api/courses/addExperience/${courseId}`,
+        `https://the-platform-backend.onrender.com/api/courses/addExperience/${courseId}`,
         { metrics, description },
         { headers: { 'Content-Type': 'application/json' } }
       );

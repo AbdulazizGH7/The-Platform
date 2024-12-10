@@ -10,7 +10,7 @@ const ExperienceList = ({ courseId }) => {
   // Fetch experiences for the courseId if it's not already in the context
   useEffect(() => {
     if (!experiences || experiences.length === 0) {
-      axios.get(`http://localhost:8080/api/courses/${courseId}/experiences`)
+      axios.get(`https://the-platform-backend.onrender.com/api/courses/${courseId}/experiences`)
         .then((response) => {
           setExperiences(response.data);  // Populate experiences specific to this course
         })
@@ -23,7 +23,7 @@ const ExperienceList = ({ courseId }) => {
 
   const deleteExperience = (experienceId) => {
     // Call the API to delete the experience directly by its ID
-    axios.delete(`http://localhost:8080/api/experiences/${experienceId}`)
+    axios.delete(`https://the-platform-backend.onrender.com/api/experiences/${experienceId}`)
       .then(() => {
         setExperiences(prev => prev.filter(exp => exp._id !== experienceId));
       })
