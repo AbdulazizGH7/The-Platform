@@ -29,7 +29,7 @@ function ResourceList() {
   useEffect(() => {
     async function fetchCourse() {
       try {
-        const res = await axios.get(`http://localhost:8080/api/courses/${courseId}`);
+        const res = await axios.get(`https://the-platform-backend.onrender.com/api/courses/${courseId}`);
         setCourse(res.data);
       } catch (error) {
         console.error('Error fetching course:', error);
@@ -42,7 +42,7 @@ function ResourceList() {
   useEffect(() => {
     async function fetchCategoryResources() {
       try {
-        const res = await axios.get(`http://localhost:8080/api/resources/${courseId}/${category}`);
+        const res = await axios.get(`https://the-platform-backend.onrender.com/api/resources/${courseId}/${category}`);
         const resource = res.data;
 
         if (resource && resource.files) {
@@ -64,7 +64,7 @@ function ResourceList() {
   const confirmDelete = async () => {
     console.log('Attempting to delete file with ID:', fileToDelete);
     try {
-        await axios.delete(`http://localhost:8080/upload/${fileToDelete}`);
+        await axios.delete(`https://the-platform-backend.onrender.com/upload/${fileToDelete}`);
         setFileList((prev) => prev.filter((file) => file._id !== fileToDelete));
         setShowDeleteConfirmation(false);
         // Optionally, display a success notification
