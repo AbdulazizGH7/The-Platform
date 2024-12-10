@@ -8,7 +8,7 @@ function CourseGroupLayout() {
   const { user } = useUser();
 
   return (
-    <div className="flex flex-col items-center w-full px-4">
+    <div className="flex flex-col items-center w-full px-4" id="courseGroup">
       {/* Section Cards Layout */}
       <div className="flex flex-col lg:flex-row justify-between items-center gap-10 w-full max-w-7xl mt-10">
         <SectionCard title="Courses" items={user.courses} />
