@@ -8,6 +8,7 @@ import { useUser } from '../contexts/UserContext';
 
 const GroupsPage = () => {
   const [showCreateGroupPopup, setShowCreateGroupPopup] = useState(false);
+  const [showDeleteGroupPopup, setShowDeleteGroupPopup] = useState(false);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showJoinPopup, setShowJoinPopup] = useState(false);
@@ -16,6 +17,7 @@ const GroupsPage = () => {
   const { user, setUser } = useUser();
   const [newGroup, setNewGroup] = useState('');
   const isInstructor = user.role === "instructor";
+  const isAdmin = user.role === "admin";
 
   useEffect(() => {
     axios
@@ -53,34 +55,57 @@ const GroupsPage = () => {
     }
   };
 
+  const handleDeleteGroup = (group) => {
+    setSelectedGroup(group);
+    setShowDeleteGroupPopup(true);
+  };
+
+  const confirmDeleteGroup = async () => {
+    if (!selectedGroup) return;
+
+    try {
+      await axios.delete(`http://localhost:8080/api/groups/${selectedGroup._id}`, {
+        data: { id: selectedGroup._id }
+      });
+
+      // Remove the deleted group from the groups list
+      setGroups(groups.filter(group => group._id !== selectedGroup._id));
+      
+      setShowDeleteGroupPopup(false);
+      setSelectedGroup(null);
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      // Optionally, show an error message to the user
+    }
+  };
+
   const cancelPopup = () => {
     setShowJoinPopup(false);
+    setShowDeleteGroupPopup(false);
     setSelectedGroup(null);
     setShowCreateGroupPopup(false);
-    setShowRemoveGroupPopup(false);
   };
   
   const handleCreateGroup = async () => {
     if (!newGroup.trim()) return;
 
     try {
-        const response = await axios.post('http://localhost:8080/api/groups/create1', {
-            groupName: newGroup,
-            courseId: courseID.courseId,
-        });
+      const response = await axios.post('http://localhost:8080/api/groups/create1', {
+        groupName: newGroup,
+        courseId: courseID.courseId,
+      });
 
-        setGroups([...groups, response.data.group]);
-        setNewGroup('');
-        setShowCreateGroupPopup(false);
+      setGroups([...groups, response.data.group]);
+      setNewGroup('');
+      setShowCreateGroupPopup(false);
     } catch (error) {
-        console.error('Error creating group:', error);
+      console.error('Error creating group:', error);
     }
-};
+  };
 
   const handleNewGroupInput = (e) => {
     setNewGroup(e.target.value);
   };
-  
 
   return (
     <>
@@ -93,7 +118,7 @@ const GroupsPage = () => {
           </header>
 
           <div className="w-full max-w-4xl overflow-y-auto h-96 p-4 bg-purple-800 bg-opacity-60 rounded-lg shadow-lg scrollbar-custom">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{console.log(user.role)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {groups.map((group) => {
                 const isMember = user.groups.includes(group._id);
                 return (
@@ -113,33 +138,35 @@ const GroupsPage = () => {
                         />
                       )
                     }
+                    showDeleteButton={isAdmin}
+                    onDelete={() => handleDeleteGroup(group)}
                   />
                 );
               })}
             </div>
           </div>
           {isInstructor && (
-        <div className="mt-4">
-          <Button
-            title="Add Group"
-            behavior={() => setShowCreateGroupPopup(true)}
-            textSize="base"
-            px="4"
-            py="2"
+            <div className="mt-4">
+              <Button
+                title="Add Group"
+                behavior={() => setShowCreateGroupPopup(true)}
+                textSize="base"
+                px="4"
+                py="2"
+              />
+            </div>
+          )}
+          <Popup
+            show={showCreateGroupPopup}
+            title="Create New Group"
+            message="Enter new group name"
+            onConfirm={handleCreateGroup}
+            onCancel={cancelPopup}
+            confirmText="Create"
+            cancelText="Cancel"
+            onInputChange={handleNewGroupInput}
+            inputValue={newGroup}
           />
-        </div>
-      )}
-      <Popup
-        show={showCreateGroupPopup}
-        title="Create New Group"
-        message="Enter new group name"
-        onConfirm={handleCreateGroup}
-        onCancel={cancelPopup}
-        confirmText="Create"
-        cancelText="Cancel"
-        onInputChange={handleNewGroupInput}
-        inputValue={newGroup}
-      />
 
           {/* Popup for Join Group Confirmation */}
           <Popup
@@ -150,6 +177,17 @@ const GroupsPage = () => {
             onCancel={cancelPopup}
             confirmText="Yes"
             cancelText="No"
+          />
+
+          {/* Popup for Delete Group Confirmation */}
+          <Popup
+            show={showDeleteGroupPopup}
+            title="Confirm Delete"
+            message={`Are you sure you want to delete the group ${selectedGroup?.groupName}?`}
+            onConfirm={confirmDeleteGroup}
+            onCancel={cancelPopup}
+            confirmText="Delete"
+            cancelText="Cancel"
           />
         </div>
       )}

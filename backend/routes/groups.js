@@ -2,6 +2,7 @@ const express = require('express')
 const Group = require('../models/Group')
 const Course = require('../models/Course')
 const router = express.Router()
+const User = require('../models/User')
 const mongoose = require('mongoose')
 
 
@@ -62,6 +63,60 @@ router.post('/create1', async (req, res) => {
         console.error('Error creating group:', error);
         res.status(500).json({ error: "Internal Server Error" });
     }
+});
+
+// Delete group by ID  
+router.delete('/:id', async (req, res) => {  
+    // Start a session for transaction  
+    const session = await mongoose.startSession();  
+    session.startTransaction();  
+
+    try {  
+        const groupId = req.body.id;  
+
+        // Check if course exists  
+        const group = await Group.findById(groupId);  
+        if (!group) {  
+            return res.status(404).json({ message: 'group not found' });  
+        }  
+
+        
+
+        // Remove group reference from User collection  
+        await User.updateMany(  
+            { groups: groupId },  
+            { $pull: { groups: groupId } },  
+            { session }  
+        );  
+        
+        await Course.updateMany(  
+            { groups: groupId },  
+            { $pull: { groups: groupId } },  
+            { session }  
+        ); 
+
+        // Delete the group  
+        await Group.findByIdAndDelete(groupId, { session });  
+
+        // Commit the transaction  
+        await session.commitTransaction();  
+
+        res.status(200).json({   
+            message: 'group deleted successfully and removed from all references'   
+        });  
+
+    } catch (error) {  
+        // If an error occurs, abort the transaction  
+        await session.abortTransaction();  
+
+        res.status(500).json({   
+            message: 'Error deleting group',   
+            error: error.message   
+        });  
+    } finally {  
+        // End the session  
+        session.endSession();  
+    }  
 });
 
 
