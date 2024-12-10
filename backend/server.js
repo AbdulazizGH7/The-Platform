@@ -27,10 +27,11 @@ mongoose.connect(process.env.DB_URL)
     const gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
         bucketName: 'uploads',
     });
+    app.locals.gfs = gfs;
     console.log('GridFS initialized');
 
     // Initialize and use upload routes with gfs
-    app.use('/upload', uploadRoutes(gfs));
+    app.use('/upload', uploadRoutes);
 
     // Other routes
     app.use('/auth', authRoutes);
