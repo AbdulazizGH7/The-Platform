@@ -1,6 +1,7 @@
 const express = require('express')
 const Instructor = require('../models/Instructor')
 const router = express.Router()
+const mongoose = require('mongoose');
 
 router.get("/", async (req, res) =>{
     try{
@@ -11,6 +12,27 @@ router.get("/", async (req, res) =>{
         console.log("Error fetching the instructors", err)
     }
 })
+
+router.get("/:id", async (req, res) => {
+  try {
+    const instructorId = req.params.id;
+
+    // Ensure the `id` is valid
+    if (!mongoose.Types.ObjectId.isValid(instructorId)) {
+      return res.status(400).json({ error: "Invalid instructor ID" });
+    }
+
+    const instructor = await Instructor.findById(instructorId).populate('reviews');
+    if (!instructor) {
+      return res.status(404).json({ error: "Instructor not found" });
+    }
+
+    res.status(200).json(instructor);
+  } catch (err) {
+    console.error("Error fetching instructor:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 router.delete('/:instructorId/deleteFeedback', async (req, res) => {
     const { instructorId } = req.params;

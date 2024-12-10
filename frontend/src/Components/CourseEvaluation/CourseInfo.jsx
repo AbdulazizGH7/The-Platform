@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { CourseEvaluationContext } from './CourseEvaluationContext';
 import Create from '../../assets/Images/Create.svg';
-import { useData } from '../../utilities/DataContext';
+import { useUser } from '../../contexts/UserContext';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const StarRating = ({ count, setRating, isReadOnly = false }) => {
   const [hover, setHover] = useState(0);
@@ -34,73 +35,90 @@ const StarRating = ({ count, setRating, isReadOnly = false }) => {
 
 const CourseInfo = () => {
   const { courseId } = useParams()
-    const { courses, user } = useData()
-    const isAdmin = user.role === "admin";
-    console.log(user)
-  
-    const course = courses.find((c) => c.courseId === Number(courseId))
+  const { user } = useUser();
+  const isAdmin = user.role === "admin";
 
+  const [course, setCourse] = useState(null);
   const [isWriteExperienceModalOpen, setIsWriteExperienceModalOpen] = useState(false);
   const { addExperience, experiences } = useContext(CourseEvaluationContext);
 
-  // For displaying the averages on the main page
+  
   const [avgDifficulty, setAvgDifficulty] = useState(0);
   const [avgWorkload, setAvgWorkload] = useState(0);
   const [avgResources, setAvgResources] = useState(0);
 
-  // For capturing user inputs in the modal
+  
   const [difficulty, setDifficulty] = useState(0);
   const [workload, setWorkload] = useState(0);
   const [resources, setResources] = useState(0);
-  const [reviewContent, setReviewContent] = useState('');
+  const [descriptionContent, setDescriptionContent] = useState('');
   const [error, setError] = useState('');
 
-  // Open modal and reset state
+  useEffect(() => {
+    // Fetch course info based on courseId
+    axios.get(`http://localhost:8080/api/courses/${courseId}`)
+      .then((response) => {
+        setCourse(response.data);
+      })
+      .catch((err) => {
+        console.error('Error fetching course data:', err);
+        setError('Failed to fetch course data');
+      });
+  }, [courseId]);
+  
+  
+  
+  
+  
+
+  // Handle opening the experience modal
   const handleOpenModal = () => {
     setDifficulty(0);
     setWorkload(0);
     setResources(0);
-    setReviewContent('');
+    setDescriptionContent('');
     setError('');
     setIsWriteExperienceModalOpen(true);
   };
 
-  // Submit experience
+  // Handle submitting the experience
   const handleSubmitExperience = (e) => {
     e.preventDefault();
-
-    // Validation: Ensure all ratings are selected
+  
     if (difficulty === 0 || workload === 0 || resources === 0) {
       setError('Please select ratings for Difficulty, Workload, and Resources.');
       return;
     }
-
+  
     const newExperience = {
       metrics: {
         difficulty,
         workload,
         resources,
       },
-      description: reviewContent,
+      description: descriptionContent,
     };
-
-    addExperience(newExperience);
-    setIsWriteExperienceModalOpen(false);
+  
+    // Pass the correct parameters to addExperience
+    addExperience(courseId, newExperience.metrics, newExperience.description);
+    setIsWriteExperienceModalOpen(false); // Close the modal
   };
+  
+  
 
   // Calculate averages when the experiences list changes
   useEffect(() => {
-    if (experiences.length > 0) {
+    if (experiences && experiences.length > 0) {
       const totalDifficulty = experiences.reduce(
-        (sum, exp) => sum + (exp.metrics.difficulty || 0),
+        (sum, exp) => sum + (exp.metrics?.difficulty || 0),
         0
       );
       const totalWorkload = experiences.reduce(
-        (sum, exp) => sum + (exp.metrics.workload || 0),
+        (sum, exp) => sum + (exp.metrics?.workload || 0),
         0
       );
       const totalResources = experiences.reduce(
-        (sum, exp) => sum + (exp.metrics.resources || 0),
+        (sum, exp) => sum + (exp.metrics?.resources || 0),
         0
       );
 
@@ -120,7 +138,7 @@ const CourseInfo = () => {
         data-layername="swe206"
         className="overflow-hidden sm:overflow-visible px-16 py-3 text-xl sm:text-2xl font-bold text-center text-white rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]"
       >
-        {course.courseName} {course.courseCode}
+        {course ? course.courseName : 'Loading...'} {course ? course.courseCode : ''}
       </h2>
       <div className="flex flex-wrap sm:flex-nowrap flex-col px-8 pt-3 pb-7 mt-12 w-full rounded-3xl shadow-sm bg-gradient-to-r from-[#171352] to-[#6E429D]">
         <h3 className="self-center text-xl sm:text-2xl font-bold text-center text-white">
@@ -159,9 +177,7 @@ const CourseInfo = () => {
               </button>
             </div>
 
-            {error && (
-              <p className="text-red-500 text-center font-medium mb-4">{error}</p>
-            )}
+            {error && <p className="text-red-500 text-center font-medium mb-4">{error}</p>}
 
             <form onSubmit={handleSubmitExperience}>
               <div className="flex flex-col lg:flex-row gap-6">
@@ -174,13 +190,13 @@ const CourseInfo = () => {
                   <StarRating count={resources} setRating={setResources} />
                 </div>
                 <div className="w-full lg:w-1/2">
-                  <h3 className="text-lg font-semibold text-white mb-2">Review</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2">Description</h3>
                   <textarea
                     rows="6"
                     className="w-full p-4 rounded-xl bg-[#1E173C] text-white border border-purple-400 focus:ring-purple-600"
-                    value={reviewContent}
-                    onChange={(e) => setReviewContent(e.target.value)}
-                    placeholder="Write your review here..."
+                    value={descriptionContent}
+                    onChange={(e) => setDescriptionContent(e.target.value)}
+                    placeholder="Write your description here..."
                   ></textarea>
                 </div>
               </div>

@@ -54,7 +54,7 @@ const InstructorInfo = () => {
 
   // Fetch instructor data from MongoDB based on instructorId
   useEffect(() => {
-    axios.get('http://localhost:8080/api/instructors') // Replace with your backend API URL
+    axios.get('http://localhost:8080/api/instructors') 
       .then((response) => {
         const instructorData = response.data.find((instructor) => instructor._id === instructorId); // Match using _id
         if (instructorData) {
@@ -121,6 +121,8 @@ const InstructorInfo = () => {
             setError('Failed to submit feedback');
         });
 };
+
+  
 
 
   if (!instructor) {

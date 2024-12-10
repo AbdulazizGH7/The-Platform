@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import { RatingStars } from './RatingStars';
-import { useData } from '../../utilities/DataContext';
+import { useUser } from '../../contexts/UserContext';
 
 
-const ExperienceItem = ({ metrics, description, onDelete }) => {
-  const { difficulty, workload, resources } = metrics;
+const ExperienceItem = ({ metrics, description, experienceId, courseId, onDelete }) => {
+  // const { difficulty, workload, resources } = metrics;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const { user } = useData();
+  const [error, setError] = useState(null);
+  const { user } = useUser();
 
   const isAdmin = user.role === 'admin';
-console.log('User:', user, 'Is Admin:', isAdmin);
 
 
   const handleConfirmDelete = () => {
-    onDelete();
-    setIsDeleteModalOpen(false);
+    console.log('Experience ID:', experienceId);  
+
+    if (!experienceId) {
+      setError('Experience ID is missing. Unable to delete feedback.');
+      return;
+    }
+
+    
+    onDelete(experienceId);  
+    setIsDeleteModalOpen(false); 
+    setError(null);
   };
 
   return (
@@ -35,21 +44,21 @@ console.log('User:', user, 'Is Admin:', isAdmin);
               >
                 Difficulty
               </h3>
-              <RatingStars count={difficulty || 0} />
+              <RatingStars count={metrics.difficulty || 0} />
               <h3
                 data-layername="workload"
                 className="self-center mt-3.5 text-xl sm:text-2xl font-bold text-center text-white"
               >
                 Workload
               </h3>
-              <RatingStars count={workload || 0} />
+              <RatingStars count={metrics.workload || 0} />
               <h3
                 data-layername="resources"
                 className="self-center mt-4 text-xl sm:text-2xl font-bold text-center text-white"
               >
                 Resources
               </h3>
-              <RatingStars count={resources || 0} />
+              <RatingStars count={metrics.resources || 0} />
             </div>
           </div>
           <div
@@ -80,9 +89,13 @@ console.log('User:', user, 'Is Admin:', isAdmin);
           <div className="bg-gradient-to-r from-[#171352] to-[#6E429D] p-6 rounded-lg shadow-lg w-[95%] sm:w-[450px]">
             <h2 className="text-xl font-bold text-white mb-4">Delete Experience</h2>
             <p className="text-white mb-6">Are you sure you want to delete this experience?</p>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
             <div className="flex justify-end gap-4">
               <button
-                onClick={() => setIsDeleteModalOpen(false)}
+                onClick={() => {
+                  setIsDeleteModalOpen(false);
+                  setError(null);
+                }}
                 className="px-6 py-2 text-white bg-gradient-to-r from-purple-500 to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]  rounded-xl"
               >
                 Cancel
@@ -91,7 +104,7 @@ console.log('User:', user, 'Is Admin:', isAdmin);
                 onClick={handleConfirmDelete}
                 className="px-6 py-2 text-white bg-gradient-to-r from-purple-500 to-[#6E429D] hover:from-[#6A31C1] hover:to-[#2326FE]  rounded-xl"
               >
-                Delete
+                Confirm
               </button>
             </div>
           </div>
