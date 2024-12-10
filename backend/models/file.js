@@ -1,12 +1,14 @@
+// models/File.js
+
 const mongoose = require('mongoose');
 
 const fileSchema = new mongoose.Schema({
-  name: String,
-  type: String,
-  size: String,
-  dateUploaded: String,
-  gridfsId: mongoose.Schema.Types.ObjectId,
-  filename: String
+  name: { type: String, required: true },
+  type: { type: String, required: true },
+  size: { type: String, required: true },
+  dateUploaded: { type: String, required: true },
+  gridfsId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  filename: { type: String, required: true },
 });
 
 module.exports = mongoose.model('File', fileSchema);

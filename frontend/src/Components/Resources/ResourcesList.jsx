@@ -41,10 +41,15 @@ function ResourcesList() {
       try {
         const res = await axios.get(`http://localhost:8080/api/resources/${courseId}/${category}`);
         const resource = res.data;
-        setFileList(resource.files || []);
+  
+        if (resource && resource.files) {
+          setFileList(resource.files); // Ensure files include _id
+        } else {
+          setFileList([]);
+        }
       } catch (error) {
-        console.error('Error fetching resources:', error);
-        setFileList([]); // Fallback to empty list
+        console.error("Error fetching resources:", error);
+        setFileList([]);
       }
     }
     fetchCategoryResources();
@@ -60,6 +65,7 @@ function ResourcesList() {
       setShowDeleteConfirmation(false);
     } catch (error) {
       console.error("Error deleting file:", error);
+      alert('Failed to delete file. Please try again.');
     }
   };
 

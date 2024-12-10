@@ -9,7 +9,7 @@ function ResourcesTable({ files, isAdmin, onDelete }) {
       <tbody>
         {files.map((file, index) => (
           <ResourcesTableRow
-            key={index}
+            key={file._id} // Use _id as the key
             file={file}
             index={index}
             isAdmin={isAdmin}
