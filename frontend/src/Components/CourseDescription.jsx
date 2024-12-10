@@ -10,7 +10,7 @@ function CourseDescription() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/courses/${courseId}`)
+      .get(`https://the-platform-backend.onrender.com/api/courses/${courseId}`)
       .then((response) => {
         setCourse(response.data);
         setLoading(false);
