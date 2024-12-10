@@ -25,8 +25,10 @@ export const UserProvider = ({ children }) => {
   };  
 
   const logout = () => {  
-    setUser(null);  
-    localStorage.removeItem('user');  
+    setTimeout(() => {
+      setUser(null);  
+      localStorage.removeItem('user');  
+    }, 100);
   };  
 
   if (loading) {  
