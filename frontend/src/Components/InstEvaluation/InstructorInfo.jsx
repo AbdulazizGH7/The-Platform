@@ -54,7 +54,7 @@ const InstructorInfo = () => {
 
   // Fetch instructor data from MongoDB based on instructorId
   useEffect(() => {
-    axios.get('http://localhost:8080/api/instructors') // Replace with your backend API URL
+    axios.get('https://the-platform-backend.onrender.com/api/instructors') 
       .then((response) => {
         const instructorData = response.data.find((instructor) => instructor._id === instructorId); // Match using _id
         if (instructorData) {
@@ -110,7 +110,7 @@ const InstructorInfo = () => {
     };
 
     // Make an API call to add the feedback to the database
-    axios.put(`http://localhost:8080/api/instructors/addFeedback/${instructorId}`, newFeedback)
+    axios.put(`https://the-platform-backend.onrender.com/api/instructors/addFeedback/${instructorId}`, newFeedback)
         .then((response) => {
             // After feedback is added successfully, update the state with the new feedback
             addFeedback(response.data.reviews);  // Assuming response.data contains the updated reviews array
@@ -121,6 +121,8 @@ const InstructorInfo = () => {
             setError('Failed to submit feedback');
         });
 };
+
+  
 
 
   if (!instructor) {

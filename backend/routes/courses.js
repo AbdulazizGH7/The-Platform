@@ -5,6 +5,7 @@ const Course = require('../models/Course')
 const Department = require('../models/Department');  
 const Instructor = require('../models/Instructor');  
 const User = require('../models/User');  
+const Experience = require('../models/Experience');
 
 router.get("/", async (req, res) =>{
     try{
@@ -157,5 +158,60 @@ router.delete('/:id', async (req, res) => {
         session.endSession();  
     }  
 });
+
+router.put('/addExperience/:courseId', async (req, res) => {
+    const { courseId } = req.params;
+    const { metrics, description } = req.body;
+  
+    try {
+      const newExperience = new Experience({ metrics, description });
+      await newExperience.save();
+  
+      const course = await Course.findByIdAndUpdate(
+        courseId,
+        { $push: { experiences: newExperience._id } },
+        { new: true }
+      ).populate('experiences'); // Ensure experiences are populated.
+  
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      // Ensure the backend is returning the populated experiences
+      return res.status(200).json({ experiences: course.experiences }); // Return updated experiences
+  
+    } catch (err) {
+      console.error('Error adding experience:', err);
+      res.status(500).json({ message: 'Failed to add experience' });
+    }
+  });
+  
+
+
+    router.get("/:id/experiences", async (req, res) => {
+        try {
+          const courseId = req.params.id;
+      
+          // Ensure the `id` is valid
+          if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({ error: "Invalid course ID" });
+          }
+      
+          const course = await Course.findById(courseId);
+          if (!course) {
+            return res.status(404).json({ error: "Course not found" });
+          }
+      
+          res.status(200).json(course);
+        } catch (err) {
+          console.error("Error fetching course:", err);
+          res.status(500).json({ error: "Internal server error" });
+        }
+      });
+
+module.exports = router
+
+
+
 
 module.exports = router

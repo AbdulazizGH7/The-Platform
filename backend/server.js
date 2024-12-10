@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth'); // Import the auth router
 const users = require('./routes/users');
 const groups = require('./routes/groups');
 const uploadRoutes = require('./routes/uploads');
+const Experience = require('./routes/experiences');
 
 const PORT = process.env.PORT || 8080; // Ensure default port is 8080
 
@@ -41,6 +42,7 @@ mongoose.connect(process.env.DB_URL)
     app.use('/api/users', users);
     app.use('/api/resources', resources);
     app.use("/api/groups", groups);
+    app.use("/api/experiences", Experience);
 
     // Start the server after all routes are set up
     app.listen(PORT, () =>{
