@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GroupCard from '../Components/GroupCard.jsx';
 import Popup from '../Components/Popup.jsx';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Button from '../Components/Button';
 import { useUser } from '../contexts/UserContext';
 
@@ -127,7 +127,12 @@ const GroupsPage = () => {
                     title={group.groupName}
                     action={
                       isMember ? (
-                        <span className="text-green-500 font-semibold">Joined</span>
+                        <Link 
+                          to={`/group/${group._id}`}
+                          className="text-green-500 font-semibold hover:underline"
+                        >
+                          View Group
+                        </Link>
                       ) : (
                         <Button
                           title="Join"
