@@ -1,23 +1,35 @@
+// ResourcesTableRow.js
+
 import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 
 function ResourcesTableRow({ file, index, isAdmin, onDelete }) {
-  const downloadFile = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8080/upload/download/${file.gridfsId}`, {
-        responseType: 'blob',
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', file.name);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error("Error downloading file:", error);
+  const downloadFile = () => {
+    if (!file.gridfsId) {
+      console.error("GridFS ID is undefined:", file);
+      return;
     }
+    console.log("File object:", file);
+
+    axios
+      .get(`http://localhost:8080/upload/download/${file.gridfsId}`, {
+        responseType: "blob", // Ensure the file is downloaded as binary data
+      })
+      .then((response) => {
+        // Create a URL for the downloaded file and trigger download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", file.name);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => {
+        console.error("Error downloading file:", error);
+        alert('Failed to download file. Please try again.');
+      });
   };
 
   return (
@@ -49,7 +61,7 @@ function ResourcesTableRow({ file, index, isAdmin, onDelete }) {
       {isAdmin && (
         <td className="py-2 px-4 text-sm text-center border-b border-[#0F3460]">
           <button
-            onClick={() => onDelete(file._id)}
+            onClick={() => onDelete(file._id)} // Pass file._id for deletion
             className="text-red-500 hover:text-red-700 focus:outline-none"
             aria-label="Delete file"
           >
