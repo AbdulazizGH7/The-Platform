@@ -13,7 +13,7 @@ function ResourcesTableRow({ file, index, isAdmin, onDelete }) {
     console.log("File object:", file);
 
     axios
-      .get(`http://localhost:8080/upload/download/${file.gridfsId}`, {
+      .get(`https://the-platform-backend.onrender.com/upload/download/${file.gridfsId}`, {
         responseType: "blob", // Ensure the file is downloaded as binary data
       })
       .then((response) => {

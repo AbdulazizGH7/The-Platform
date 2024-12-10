@@ -30,7 +30,7 @@ function ResourcesPage() {
   useEffect(() => {
     async function fetchCourse() {
       try {
-        const res = await axios.get(`http://localhost:8080/api/courses/${courseId}`);
+        const res = await axios.get(`https://the-platform-backend.onrender.com/api/courses/${courseId}`);
         setCourse(res.data); // res.data should be the course object
       } catch (error) {
         console.error("Error fetching course:", error);
@@ -43,7 +43,7 @@ function ResourcesPage() {
   useEffect(() => {
     async function fetchResources() {
       try {
-        const res = await axios.get(`http://localhost:8080/api/resources/${courseId}`);
+        const res = await axios.get(`https://the-platform-backend.onrender.com/api/resources/${courseId}`);
         // res.data should be an array of resources, each with a category and files array
         setResources(res.data);
       } catch (error) {

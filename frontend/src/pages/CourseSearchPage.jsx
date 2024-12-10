@@ -29,7 +29,7 @@ function CourseSearchPage() {
     const isAdmin = user.role === "admin";
 
     useEffect(() => {    
-        axios.get('http://localhost:8080/api/departments')  
+        axios.get('https://the-platform-backend.onrender.com/api/departments')  
             .then(response => {  
                 setDepartments(response.data);  
         })  
@@ -37,7 +37,7 @@ function CourseSearchPage() {
             console.error('Error fetching data:', error);  
         });
 
-        {isAdmin && axios.get('http://localhost:8080/api/instructors')  
+        {isAdmin && axios.get('https://the-platform-backend.onrender.com/api/instructors')  
             .then(response => {  
                 setOptions(response.data.map(instructor => ({
                     label: instructor.name,
@@ -74,7 +74,7 @@ function CourseSearchPage() {
                 localStorage.setItem('user', JSON.stringify(updatedUser));  
                 toast.success("Course has been added successfully!")
 
-                await axios.put("http://localhost:8080/api/users/addCourse", {  
+                await axios.put("https://the-platform-backend.onrender.com/api/users/addCourse", {  
                     courseId: courseID,  
                     userId: user.id  
                 });
@@ -86,7 +86,7 @@ function CourseSearchPage() {
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 toast.success("Course has been removed successfully!")  
     
-                await axios.put("http://localhost:8080/api/users/removeCourse", {  
+                await axios.put("https://the-platform-backend.onrender.com/api/users/removeCourse", {  
                     courseId: courseID,  
                     userId: user.id  
                 });  
@@ -108,8 +108,8 @@ function CourseSearchPage() {
     // This function removes a course
     async function handleConfirmRemove() {
         try{
-            await axios.delete(`http://localhost:8080/api/courses/${courseToRemove._id}`)
-            const response = await axios.get('http://localhost:8080/api/departments')
+            await axios.delete(`https://the-platform-backend.onrender.com/api/courses/${courseToRemove._id}`)
+            const response = await axios.get('https://the-platform-backend.onrender.com/api/departments')
             setDepartments(response.data)
             toast.success("Course has been deleted successfully!")
         } catch(err){
@@ -140,7 +140,7 @@ function CourseSearchPage() {
         try {  
             const instIDs = selectedInstructors.map(inst => inst.value) 
             // First API call to create course
-            const courseResponse = await axios.post("http://localhost:8080/api/courses", {  
+            const courseResponse = await axios.post("https://the-platform-backend.onrender.com/api/courses", {  
                 courseCode: newCourse.courseCode,  
                 courseName: newCourse.courseName,  
                 description: newCourse.courseDescription,  
@@ -159,17 +159,17 @@ function CourseSearchPage() {
     
             // Update department if selectedAddDepartment exists  
             if (selectedAddDepartment) {  
-                await axios.put("http://localhost:8080/api/departments/addCourse", { 
+                await axios.put("https://the-platform-backend.onrender.com/api/departments/addCourse", { 
                     departmentName: selectedAddDepartment,  
                     courseId: newCourseId  
                 });
-                const response = await axios.get('http://localhost:8080/api/departments')
+                const response = await axios.get('https://the-platform-backend.onrender.com/api/departments')
                 setDepartments(response.data)  
             }  
     
             // Update instructors if there are any  
             if (selectedInstructors.length > 0) {  
-                await axios.put("http://localhost:8080/api/instructors/addCourse", {
+                await axios.put("https://the-platform-backend.onrender.com/api/instructors/addCourse", {
                     instructorsId: instIDs,  
                     courseId: newCourseId  
                 });  

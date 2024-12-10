@@ -20,7 +20,7 @@ function SectionCard({ title, items }) {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const url = title === 'Courses'? 'http://localhost:8080/api/users/courses' : 'http://localhost:8080/api/users/groups';
+        const url = title === 'Courses'? 'https://the-platform-backend.onrender.com/api/users/courses' : 'https://the-platform-backend.onrender.com/api/users/groups';
         const response = await axios.post(url, title === 'Courses'? { coursesIds: items } : { groupsIds: items });
         setData(response.data[title.toLowerCase()]);
         setLoading(false);
