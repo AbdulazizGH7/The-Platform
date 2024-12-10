@@ -7,6 +7,7 @@ import DropDown from '../Components/DropDown';
 import Button from '../Components/Button';
 import { toast } from 'react-toastify';
 import ToastNotification from '../Components/Resources/ToastNotification';
+import Spinner from '../Components/Spinner';
 
 function CourseSearchPage() {
 
@@ -26,6 +27,7 @@ function CourseSearchPage() {
     const [options, setOptions] = useState({})
     const [selectedInstructors, setSelectedInstructors] = useState([])
     const {user, setUser} = useUser()
+    const [loading, setLoading] = useState(true)
     const isAdmin = user.role === "admin";
 
     useEffect(() => {    
@@ -47,6 +49,7 @@ function CourseSearchPage() {
         .catch(error => {  
             console.error('Error fetching data:', error);  
         });}
+        setLoading(false)
     }, []);
 
     // This function handles the selection of the department
@@ -108,6 +111,7 @@ function CourseSearchPage() {
     // This function removes a course
     async function handleConfirmRemove() {
         try{
+            setLoading(true)
             await axios.delete(`https://the-platform-backend.onrender.com/api/courses/${courseToRemove._id}`)
             const response = await axios.get('https://the-platform-backend.onrender.com/api/departments')
             setDepartments(response.data)
@@ -116,6 +120,7 @@ function CourseSearchPage() {
             console.log(err)
             toast.error(err) 
         } finally{
+            setLoading(false)
             setShowModal(false);
             setCourseToRemove(null);
             setSelectedDepartment('')
@@ -140,6 +145,7 @@ function CourseSearchPage() {
         try {  
             const instIDs = selectedInstructors.map(inst => inst.value) 
             // First API call to create course
+            setLoading(true)
             const courseResponse = await axios.post("https://the-platform-backend.onrender.com/api/courses", {  
                 courseCode: newCourse.courseCode,  
                 courseName: newCourse.courseName,  
@@ -149,8 +155,9 @@ function CourseSearchPage() {
             }); 
     
             // The success check should be on courseResponse.data.success 
-            if (!courseResponse.data.success) {  
-                toast.error(courseResponse.data.message);  
+            if (!courseResponse.data.success) {
+                setLoading(false)   
+                toast.error(courseResponse.data.message); 
                 return; // Add return to prevent executing the rest of the code  
             }  
     
@@ -174,7 +181,8 @@ function CourseSearchPage() {
                     courseId: newCourseId  
                 });  
             }
-            
+
+            setLoading(false) 
             toast.success("Course has been created successfully"); 
     
             // If everything succeeded, reset the form  
@@ -182,9 +190,10 @@ function CourseSearchPage() {
             setNewCourse({ courseCode: '', courseName: '', courseDescription: '' });  
             setShowAddCourseForm(false);  
     
-        } catch (err) {  
+        } catch (err) {
+            setLoading(false)   
             console.error('Error:', err.response?.data || err.message);  
-            alert('An error occurred: ' + (err.response?.data?.message || err.message));  
+            toast.error('An error occurred: ' + (err.response?.data?.message || err.message));  
         }  
     }  
 
@@ -361,6 +370,7 @@ function CourseSearchPage() {
                     </div>
                 </div>
             )}
+            <Spinner loading={loading}/>
             <ToastNotification/>
         </section>
     );

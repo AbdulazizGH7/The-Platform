@@ -5,12 +5,14 @@ import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import ToastNotification from '../Components/Resources/ToastNotification';
+import Spinner from '../Components/Spinner';
 
 
 const AnnouncementForm = ({ onSubmit, onClose, initialData = null }) => {
   const [message, setMessage] = useState(initialData ? initialData.message : '');
   const [error, setError] = useState('');
   const { user } = useUser();
+  const [loading, setLoading] = useState(false)
   const groupId = useParams(); // Ensure `groupId` matches your route parameter
 
   const handleSubmit = async (e) => {
@@ -21,24 +23,28 @@ const AnnouncementForm = ({ onSubmit, onClose, initialData = null }) => {
     }
 
     try {
+      setLoading(true)
       const response = await axios.post('https://the-platform-backend.onrender.com/api/groups/announcement', {
         groupId: groupId.groupId, // Ensure this matches the backend field
         announcement: message.trim(), // Match backend field for the announcement message
         senderId: user.id, // Assuming `user.id` contains the ID of the user
       });
-
       toast.success('Announcement posted successfully!');
       onSubmit(response.data.announcement); // Notify parent of the successful submission
       setMessage(''); // Reset the form
       onClose(); // Close the form
     } catch (err) {
+      
       console.error('Failed to post announcement:', err);
       setError('Failed to post announcement. Please try again.');
       toast.error('Failed to post the announcement.');
+    } finally{
+      setLoading(false)
     }
   };
 
   return (
+  <>
     <div className="bg-gradient-to-br from-purple-700 to-indigo-600 p-6 rounded-lg shadow-md mb-6">
       <form onSubmit={handleSubmit}>
         <textarea
@@ -66,6 +72,9 @@ const AnnouncementForm = ({ onSubmit, onClose, initialData = null }) => {
         </div>
       </form>
     </div>
+    <Spinner loading={loading}/>
+    
+  </>
   );
 };
 
