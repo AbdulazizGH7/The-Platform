@@ -4,7 +4,7 @@ const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const Resource = require('../models/Resource');
-const File = require('../models/File'); // Ensure correct casing
+const File = require('../models/file'); // Ensure correct casing
 const Course = require('../models/Course');
 
 const router = express.Router();
