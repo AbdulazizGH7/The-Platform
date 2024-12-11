@@ -12,7 +12,7 @@ function CourseGroupLayout() {
       {/* Section Cards Layout */}
       <div className="flex flex-col lg:flex-row justify-between items-center gap-10 w-full max-w-7xl mt-10">
         <SectionCard title="Courses" items={user.courses} />
-        <div className="hidden lg:block h-full w-px bg-gray-300"></div>
+        <div className="vl self-stretch hidden lg:block"></div>
         <SectionCard title="Groups" items={user.groups} />
       </div>
 
