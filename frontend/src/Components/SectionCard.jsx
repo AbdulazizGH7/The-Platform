@@ -60,7 +60,7 @@ function SectionCard({ title, items }) {
   }
 
   return (
-    <div className="section-card rounded-md text-center w-full sm:max-w-[600px] 2xl:max-w-[900px] lg:self-stretch">
+    <div className="section-card rounded-md text-center w-full sm:max-w-[600px] 2xl:max-w-[900px] lg:self-stretch min-h-[300px]">
       <h2 className="text-gray-100 font-bold text-3xl py-5 sm:text-4xl">{title}</h2>
       <hr className="w-[95%] my-0 mx-auto" />
       {items.length > 0? (
