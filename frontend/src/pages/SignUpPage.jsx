@@ -3,6 +3,7 @@ import Computer from "../assets/Images/Computer.svg";
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext'
 import axios from 'axios'
+import Spinner from '../Components/Spinner';
 function SignUpPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -18,6 +19,7 @@ function SignUpPage() {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [termsError, setTermsError] = useState(false);
   const [termsErrorMessage, setTermsErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false)
 
   const {login} = useUser()
   const navigate = useNavigate();
@@ -75,11 +77,13 @@ function SignUpPage() {
 
     // Handle server-side validation errors if no errors have been found
     try {
+      setLoading(true)
       const response = await axios.post('https://the-platform-backend.onrender.com/auth/signup/', {
         username,
         email,
         password,
       });
+      setLoading(false)
     
       if (response.status === 201) {
         login(response.data.user)
@@ -133,6 +137,8 @@ function SignUpPage() {
   };
 
   return (
+    <>
+    <Spinner loading={loading}/>
     <div className="flex items-center justify-center min-h-screen mx-8">
       <div className="flex flex-col md:flex-row items-center space-x-0 md:space-x-4 mx-auto gap-20">
         <div
@@ -285,6 +291,7 @@ function SignUpPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

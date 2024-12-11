@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Computer from "../assets/Images/Computer.svg";
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext'
+import Spinner from '../Components/Spinner'
 import axios from 'axios';
 
 function LoginPage() {
@@ -10,6 +11,7 @@ function LoginPage() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false)
   const { login } = useUser(); 
 
   const navigate = useNavigate();
@@ -39,8 +41,9 @@ function LoginPage() {
     }
   
     try {
+      setLoading(true)
       const response = await axios.post('https://the-platform-backend.onrender.com/auth/login', { email, password });
-  
+      setLoading(false)
       if (response.status === 200) {
         login(response.data.user);// user is now loaded from the DB
         navigate('/home');
@@ -61,6 +64,8 @@ function LoginPage() {
   };
 
   return (
+    <>
+    <Spinner loading={loading}/>
     <div className="flex items-center justify-center min-h-screen mx-8">
       <div className="flex flex-col md:flex-row items-center space-x-0 md:space-x-4 mx-auto gap-20">
         <div
@@ -130,6 +135,7 @@ function LoginPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
