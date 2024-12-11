@@ -26,7 +26,7 @@ router.get("/:id", async (req, res) => {
         return res.status(400).json({ error: "Invalid course ID" });
       }
   
-      const course = await Course.findById(courseId);
+      const course = await Course.findById(courseId).populate('prerequisites', 'courseCode');
       if (!course) {
         return res.status(404).json({ error: "Course not found" });
       }
