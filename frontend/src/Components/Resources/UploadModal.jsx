@@ -30,7 +30,7 @@ function UploadModal({ closeModal, categoryTitles, currentCategory, courseId, on
     formData.append('courseId', courseId);
 
     try {
-      const response = await axios.post('http://localhost:8080/upload', formData, {
+      const response = await axios.post('https://the-platform-backend.onrender.com/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log('File upload response:', response.data);

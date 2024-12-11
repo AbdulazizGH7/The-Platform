@@ -13,7 +13,7 @@ const InstructorListPage = () => {
   useEffect(() => {
     const fetchInstructors = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/instructors'); // Use correct port
+        const response = await axios.get('https://the-platform-backend.onrender.com/api/instructors'); // Use correct port
         setInstructors(response.data); // Set the fetched data to state
         setLoading(false); // Set loading to false once the data is fetched
       } catch (err) {
