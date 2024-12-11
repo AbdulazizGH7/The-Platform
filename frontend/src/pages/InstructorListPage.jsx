@@ -69,7 +69,7 @@ const InstructorListPage = () => {
     return (
       <button
         onClick={handleNavigate}
-        className="flex flex-col sm:flex-row items-center bg-purple-900/50 rounded-xl p-4 sm:p-6 shadow-lg border border-purple-500/30 w-full text-left hover:shadow-xl transition-shadow duration-300"
+        className="hover:scale-105 flex flex-col sm:flex-row items-center bg-purple-900/50 rounded-xl p-4 sm:p-6 shadow-lg border border-purple-500/30 hover:bg-purple-600  md:p-6 lg:p-8  transition-all duration-300 ease-out transform hover w-full text-left hover:shadow-xl "
       >
         <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-purple-800 flex-shrink-0">
           <img
