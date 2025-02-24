@@ -1,6 +1,27 @@
 # The Platform
 
-This project is part of the SWE-363 course.
+A web application built using the MERN stack (React.js, Node.js, MongoDB, Express.js) to centralize academic resources, announcements, course evaluations, and instructor evaluations for KFUPM students. This project aims to streamline academic processes and provide a user-friendly platform for students and faculty.
+
+
+## Features
+* Centralized Academic Resources: Access course materials and resources in one place.
+
+* Announcements: Stay updated with the latest academic announcements.
+
+* Course Evaluations: Submit and view evaluations for courses.
+* Instructor Evaluations: Provide feedback on instructors for each course.
+
+* User-Friendly Interface: Designed with a focus on simplicity and usability.
+
+## Screenshots
+
+### Homepage
+![Homepage Screenshot](Rassets/homepage.png)
+
+### Course Evaluation Page
+![Course Evaluation Screenshot](Rassets/course-evaluation.png)
+### Course  Page
+![Course Screenshot](Rassets/CoursePage.png)
 
 ## Installation
 
