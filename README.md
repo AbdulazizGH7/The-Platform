@@ -17,11 +17,14 @@ A web application built using the MERN stack (React.js, Node.js, MongoDB, Expres
 
 ### Homepage
 ![Homepage Screenshot](Rassets/homepage.png)
-
-### Course Evaluation Page
-![Course Evaluation Screenshot](Rassets/course-evaluation.png)
 ### Course  Page
 ![Course Screenshot](Rassets/CoursePage.png)
+### Resources  Page
+![Course Resources](Rassets/ResPage.png)
+### ins Evaluation Page
+![ins Evaluation Screenshot](Rassets/InsEv.png.png)
+
+
 
 ## Installation
 
