@@ -22,9 +22,10 @@ A web application built using the MERN stack (React.js, Node.js, MongoDB, Expres
 ### Resources  Page
 ![Course Resources](Rassets/ResPage.png)
 ### ins Evaluation Page
-![ins Evaluation Screenshot](Rassets/InsEv.png.png)
+![ins Evaluation Screenshot](Rassets/InsEv.png)
 
-
+## Video
+[Watch the video on YouTube](https://www.youtube.com/watch?v=xc6cgKtonJM)
 
 ## Installation
 
